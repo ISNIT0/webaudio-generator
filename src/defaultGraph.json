@@ -1,0 +1,13 @@
+{
+    "nodes": [{
+        "kind": "input",
+        "type": "oscillator",
+        "options": {
+            "waveType": "sine",
+            "frequency": 1000
+        }
+    }, {
+        "kind": "output",
+        "type": "speaker"
+    }]
+}
