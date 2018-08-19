@@ -27,6 +27,7 @@ body {
         background: #f2f2f2;
         height: 100%;
         padding: 30px;
+        overflow-y: scroll;
         pre,
         code {
             font-family: 'Roboto Mono', monospace;
@@ -35,15 +36,19 @@ body {
     .graph-preview {
         flex: 1 1 auto;
         width: 55%;
+        height: 100%;
         text-align: center;
         display: flex;
         flex-direction: column;
-        justify-content: center;
+        justify-content: flex-start;
+        overflow-y: scroll;
+        padding: 30px;
         .node-cont {
             width: 100%;
             display: flex;
             flex-direction: row;
             justify-content: center;
+            flex: 0 0 auto;
             .node-centraliser {
                 width: 100px;
                 display: flex;
@@ -72,13 +77,12 @@ body {
             .node-detail {
                 background: #f2f2f2;
                 padding: 30px;
-                position: absolute;
-                top: 100%;
                 z-index: 999999;
                 width: 400px;
-                left: -150;
+                margin-left: -150;
                 color: #333;
                 text-align: left;
+                position: relative;
                 .deleteNode {
                     appearance: none;
                     border: none;

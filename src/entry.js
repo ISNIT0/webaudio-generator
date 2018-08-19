@@ -34,7 +34,7 @@ async function addNode(state, affect, newIndex, node) {
     if (!node.waNode) {
         const nodeDef = nodeDefs[node.kind][node.type];
         node.waNode = await nodeDef.initWANode(state.audioCtx, node);
-        nodeDef.updateWANode(node.waNode, node);
+        nodeDef.updateWANode(node.waNode, node, newIndex, state.graph);
     }
 
 
@@ -101,41 +101,40 @@ function renderNode(state, affect, node, index) {
                         }
                     }
                 },
-                (nodeDef.renderView(state, affect, node, index) || [
+                nodeDef.renderView(state, affect, node, index) || [
                     h('h3', node.kind === 'modifier' ? node.type : node.kind),
-                ]).concat(
-                    state.selectedNode === index ?
-                    h('div.node-detail', [
-                        node.kind === 'modifier' ? h('button.deleteNode', {
-                            onclick() {
-                                deleteNode(state, affect, index);
-                                affect.set('selectedNode', -1);
-                            }
-                        }, 'delete') : null,
-                        h('div', [
-                            h('strong', 'Node Type:'),
-                            h('select', {
-                                    value: node.type,
-                                    async onchange(ev) {
-                                        affect.set('selectedNode', -1);
-                                        const newType = ev.target.value;
-                                        const newNodeDef = nodeDefs[node.kind][newType];
-                                        const newNode = newNodeDef.default();
-
-                                        newNode.waNode = await newNodeDef.initWANode(state.audioCtx, newNode);
-                                        newNodeDef.updateWANode(newNode.waNode, newNode);
-
-                                        replaceNode(state, affect, newNode, index);
-                                    }
-                                },
-                                Object.keys(nodeDefs[node.kind]).map(type => h('option', type)))
-                        ]),
-                        h('hr'),
-                        nodeDef.renderDetail(state, affect, node, index)
-                    ]) :
-                    null
-                )
+                ]
             ),
+            state.selectedNode === index ?
+            h('div.node-detail', [
+                node.kind === 'modifier' ? h('button.deleteNode', {
+                    onclick() {
+                        deleteNode(state, affect, index);
+                        affect.set('selectedNode', -1);
+                    }
+                }, 'delete') : null,
+                h('div', [
+                    h('strong', 'Node Type:'),
+                    h('select', {
+                            value: node.type,
+                            async onchange(ev) {
+                                affect.set('selectedNode', -1);
+                                const newType = ev.target.value;
+                                const newNodeDef = nodeDefs[node.kind][newType];
+                                const newNode = newNodeDef.default();
+
+                                newNode.waNode = await newNodeDef.initWANode(state.audioCtx, newNode);
+                                newNodeDef.updateWANode(newNode.waNode, newNode, index, state.graph);
+
+                                replaceNode(state, affect, newNode, index);
+                            }
+                        },
+                        Object.keys(nodeDefs[node.kind]).map(type => h('option', type)))
+                ]),
+                h('hr'),
+                nodeDef.renderDetail(state, affect, node, index)
+            ]) :
+            null,
             index !== state.graph.nodes.length - 1 ? makeArrow(state, affect, index) : null,
         ])
     ]);
@@ -154,7 +153,7 @@ window.injectAffect = makeRenderLoop(target, {
             .forEach(nodeIndex => {
                 const node = state.graph.nodes[nodeIndex];
                 const nodeDef = nodeDefs[node.kind][node.type];
-                nodeDef.updateWANode(node.waNode, node);
+                nodeDef.updateWANode(node.waNode, node, nodeIndex, state.graph);
             });
         return h('div.app', [
             h('div.code-preview', [
@@ -179,27 +178,30 @@ function getNodeName(graph, nodeIndex) {
 }
 
 function generateGraphCode(graph) {
-    return `
-const audioCtx = new(window.AudioContext || window.webkitAudioContext)();
+    return `(async function(){ // Top Level async/await
+
+` + (`const audioCtx = new(window.AudioContext || window.webkitAudioContext)();
     ` + graph.nodes.map((node, nodeIndex) => {
         const nodeDef = nodeDefs[node.kind][node.type];
         const nodeName = getNodeName(graph, nodeIndex);
         return nodeDef.generateCode ? nodeDef.generateCode(nodeName, node) : '';
-    }).join('\n') + '\n\n\n' + graph.nodes.map((node, index, arr) => {
+    }).join('\n') + '\n\n' + graph.nodes.map((node, index, arr) => {
         if (index === 0) {} else {
             const prevNodeName = getNodeName(graph, index - 1);
             const nodeName = getNodeName(graph, index);
             return `${prevNodeName}.connect(${nodeName});`;
         }
-    }).join('\n');
+    }).join('\n')).split('\n').map(l => '   ' + l).join('\n') + `
+
+})();`;
 }
 
 function initGraph(audioCtx, graph) {
     Promise.all(
-        graph.nodes.map(async (node) => {
+        graph.nodes.map(async (node, nodeIndex) => {
             const nodeDef = nodeDefs[node.kind][node.type];
             const waNode = await nodeDef.initWANode(audioCtx, node);
-            nodeDef.updateWANode(waNode, node); //Mutation
+            nodeDef.updateWANode(waNode, node, nodeIndex, graph); //Mutation
             node.waNode = waNode;
         })
     ).then(() => {
