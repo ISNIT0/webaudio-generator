@@ -252,7 +252,7 @@ module.exports = {
             "kind": "input",
             "type": "file",
             "options": {
-                "filePath": "./br-jam-loop.wav"
+                "filePath": "./res/br-jam-loop.wav"
             }
         };
     },
@@ -295,10 +295,10 @@ module.exports = {
                     }
                 }, [
                     h('option', {
-                        value: './br-jam-loop.wav'
+                        value: './res/br-jam-loop.wav'
                     }, 'Jam Loop'),
                     h('option', {
-                        value: './techno.wav'
+                        value: './res/techno.wav'
                     }, 'Techno')
                 ])
             ])
