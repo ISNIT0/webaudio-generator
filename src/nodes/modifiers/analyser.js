@@ -45,11 +45,9 @@ module.exports = {
                     height: '100px'
                 },
                 oncreate(element, lastProps) {
-                    console.log('create')
                     drawOscilloscope(element, analyser);
                 },
                 ondestroy(element) {
-                    console.log('destroy')
                     element.isDestroyed = true;
                 }
             }),

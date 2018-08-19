@@ -7,6 +7,12 @@
             "frequency": 1000
         }
     }, {
+        "kind": "modifier",
+        "type": "gain",
+        "options": {
+            "value": "0.1"
+        }
+    }, {
         "kind": "output",
         "type": "speaker"
     }]
