@@ -1,0 +1,101 @@
+body {
+  background: white;
+  color: #333;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  padding: 0;
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+}
+input {
+  margin: 0;
+}
+* {
+  box-sizing: border-box;
+}
+.app {
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+}
+.app .code-preview {
+  width: 45%;
+  background: #f2f2f2;
+  height: 100%;
+  padding: 30px;
+  overflow-y: scroll;
+}
+.app .code-preview pre,
+.app .code-preview code {
+  font-family: 'Roboto Mono', monospace;
+}
+.app .graph-preview {
+  flex: 1 1 auto;
+  width: 55%;
+  height: 100%;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  overflow-y: scroll;
+  padding: 30px;
+}
+.app .graph-preview .node-cont {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  flex: 0 0 auto;
+}
+.app .graph-preview .node-cont .node-centraliser {
+  width: 100px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.app .graph-preview .node-cont .node-centraliser .node {
+  cursor: pointer;
+  position: relative;
+  width: 100px;
+  height: 100px;
+  background: #F2994A;
+  color: white;
+  text-transform: capitalize;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 5px 0;
+}
+.app .graph-preview .node-cont .node-centraliser .node.input {
+  background: #56CCF2;
+}
+.app .graph-preview .node-cont .node-centraliser .node.output {
+  background: #BB6BD9;
+}
+.app .graph-preview .node-cont .node-detail {
+  background: #f2f2f2;
+  padding: 30px;
+  z-index: 999999;
+  width: 400px;
+  margin-left: -150;
+  color: #333;
+  text-align: left;
+  position: relative;
+}
+.app .graph-preview .node-cont .node-detail .deleteNode {
+  appearance: none;
+  border: none;
+  position: absolute;
+  right: 0;
+  top: 0;
+  padding: 10px;
+  color: white;
+  background: #EB5757;
+  font-size: 13;
+}
