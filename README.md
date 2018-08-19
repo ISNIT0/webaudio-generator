@@ -35,6 +35,7 @@ Also, I cringe at the method used to generate code. It's disgusting and you shou
 - Improve UI & UX
 - Output to file
 - Convert Node definitions to Classes
+- Move to TypeScript
 
 ## Developing
 1. Don't

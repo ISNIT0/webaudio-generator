@@ -17,7 +17,8 @@ function makeArrow(state, affect, index, direction = 'down') {
         fill: 'none',
         style: {
             width: '100%',
-            height: '30px'
+            height: '30px',
+            cursor: 'pointer'
         },
         onclick: function () {
             addNode(state, affect, index + 1, nodeDefs.modifier.gain.default())
