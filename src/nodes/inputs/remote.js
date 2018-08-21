@@ -1,0 +1,49 @@
+module.exports = {
+    default () {
+        return {
+            "kind": "input",
+            "type": "remote",
+            "options": {}
+        };
+    },
+    initWANode(audioCtx, node) {
+        return new Promise((resolve, reject) => {
+            window.peerInstance.on('call', call => {
+                console.info(`Received Call`, call);
+                call.answer();
+                call.on('stream', stream => {
+                    console.info(`Got Stream:`, stream);
+                    debugger
+                    const source = audioCtx.createMediaStreamSource(stream);
+                    source.connect(audioCtx.destination);
+                    console.log(source);
+                    resolve(source);
+                });
+            });
+        });
+    },
+    updateWANode(mediaStreamSource, node) {
+
+    },
+    renderView(state, affect, node, nodeIndex) {},
+    renderDetail(state, affect, node, nodeIndex) {
+        return [
+            h('div', [
+                h('strong', 'WaveType:'),
+                h('select', {
+                    value: node.options.waveType,
+                    onchange(ev) {
+                        affect.set(`graph.nodes.${nodeIndex}.options.waveType`, ev.target.value);
+                    }
+                }, [
+                    h('option', 'sine'),
+                    h('option', 'square'),
+                    h('option', 'sawtooth')
+                ])
+            ])
+        ];
+    },
+    generateCode(nodeName, node) {
+        return '';
+    }
+}
