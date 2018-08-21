@@ -47,7 +47,7 @@ app.post(`/makeWorkletBinary/:id`, function (req, res) {
 
 });
 
-app.listen(8090, (err) => {
+app.listen(8092, (err) => {
     if (err) console.error(err);
-    else console.info(`Started server on port [8090]`);
+    else console.info(`Started server on port [8092]`);
 });
