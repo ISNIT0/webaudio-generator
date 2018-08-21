@@ -830,13 +830,34 @@ module.exports = {
     },
     renderDetail(state, affect, node, nodeIndex) {
         return [
-            h('textarea.ts-editor', {
-                value: node.options.tsSource,
-                onblur(ev) {
-                    affect.set(`graph.nodes.${nodeIndex}.options.tsSource`, ev.target.value);
+            h('div', {
+                style: {
+                    width: '380px',
+                    'margin-left': '-20px',
                 }
-            }),
-            h('button', 'Save')
+            }, [
+                h('code', 'export function processor(input_ptr: i32, output_ptr: i32, length: i32): void {'),
+                h('br'),
+                h('textarea.ts-editor', {
+                    style: {
+                        'padding-left': '30px'
+                    },
+                    value: node.options.tsSource,
+                    onblur(ev) {
+                        affect.set(`graph.nodes.${nodeIndex}.options.tsSource`, ev.target.value);
+                    }
+                }),
+                h('code', '}'),
+                h('br'),
+                h('button', 'Save'),
+                h('a', {
+                    target: '_blank',
+                    href: 'https://github.com/AssemblyScript/assemblyscript/wiki/WebAssembly-to-TypeScript-Cheat-Sheet',
+                    style: {
+                        float: 'right'
+                    }
+                }, 'help')
+            ])
         ];
     },
     generateCode(nodeName, node) {
