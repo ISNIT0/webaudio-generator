@@ -99,3 +99,12 @@ input {
   background: #EB5757;
   font-size: 13;
 }
+.ts-editor {
+  padding: 10px;
+  color: white;
+  background: #333;
+  width: 100%;
+  min-height: 200px;
+  font-family: monospace;
+  border: none;
+}

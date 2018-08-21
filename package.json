@@ -7,5 +7,10 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "assemblyscript": "github:AssemblyScript/assemblyscript",
+    "body-parser": "1.18.3",
+    "express": "4.16.3"
+  }
 }
