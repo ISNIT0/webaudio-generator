@@ -49,5 +49,10 @@ Also, I cringe at the method used to generate code. It's disgusting and you shou
 > ./watch.sh
 ```
 
+## Useful Links
+### AudioWorklet + WebAssembly
+- https://developers.google.com/web/updates/2017/12/audio-worklet
+- https://github.com/GoogleChromeLabs/web-audio-samples/tree/gh-pages/audio-worklet/design-pattern/wasm
+
 ## License
 [MIT](./LICENSE)
