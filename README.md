@@ -16,6 +16,7 @@ This tool was written to be used as an educational aid in a talk at [London Audi
     - File
     - Oscillator
 - "Modifier" Nodes
+    - WebAssembly CustomWorklet
     - Gain
     - Delay
     - BiquadFilter
