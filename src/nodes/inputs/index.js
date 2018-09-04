@@ -1,5 +1,6 @@
 module.exports = {
     microphone: require('./microphone'),
     oscillator: require('./oscillator'),
-    file: require('./file')
+    file: require('./file'),
+    midi: require('./midi')
 };

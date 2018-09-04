@@ -246,7 +246,7 @@ module.exports = {
     output:require('./outputs/index'),
     modifier:require('./modifiers/index')
 }
-},{"./inputs/index":5,"./modifiers/index":13,"./outputs/index":14}],4:[function(require,module,exports){
+},{"./inputs/index":5,"./modifiers/index":14,"./outputs/index":15}],4:[function(require,module,exports){
 module.exports = {
     default () {
         return {
@@ -329,9 +329,10 @@ ${nodeName}.start(0);
 module.exports = {
     microphone: require('./microphone'),
     oscillator: require('./oscillator'),
-    file: require('./file')
+    file: require('./file'),
+    midi: require('./midi')
 };
-},{"./file":4,"./microphone":6,"./oscillator":7}],6:[function(require,module,exports){
+},{"./file":4,"./microphone":6,"./midi":7,"./oscillator":8}],6:[function(require,module,exports){
 module.exports = {
     default () {
         return {
@@ -363,6 +364,75 @@ const ${nodeName} = audioCtx.createMediaStreamSource(
     }
 };
 },{}],7:[function(require,module,exports){
+Tone.setContext(audioCtx);
+var synth = new Tone.Synth({
+    "oscillator": {
+        "type": "pwm",
+        "modulationFrequency": 0.2
+    },
+    "envelope": {
+        "attack": 0.02,
+        "decay": 0.1,
+        "sustain": 0.2,
+        "release": 0.9,
+    }
+});
+
+module.exports = {
+    default() {
+        return {
+            "kind": "input",
+            "type": "midi",
+            "options": {}
+        };
+    },
+    initWANode(audioCtx, node) {
+        WebMidi.enable(function (err) {
+            // https://github.com/djipco/webmidi
+            if (err) {
+                alert("WebMidi could not be enabled.");
+            }
+
+            output = WebMidi.outputs[0];
+            input = WebMidi.inputs[0];
+
+            input.addListener('noteon', "all",
+                function (e) {
+                    console.log("Received 'noteon' message (" + e.note.name + e.note.octave + ").");
+                    output.playNote(`${e.note.name}${e.note.octave}`, 'all', { velocity: 0 });
+                    synth.triggerAttack(`${e.note.name}${e.note.octave}`);
+                }
+            );
+            input.addListener('noteoff', "all",
+                function (e) {
+                    console.log("Received 'noteon' message (" + e.note.name + e.note.octave + ").");
+                    output.playNote(`${e.note.name}${e.note.octave}`, 'all', { velocity: 0 });
+                    synth.triggerRelease(`${e.note.name}${e.note.octave}`);
+                }
+            );
+        });
+
+        return synth.output;
+    },
+    updateWANode(waNode, node) {
+        
+    },
+    renderView(state, affect, node, nodeIndex) { },
+    renderDetail(state, affect, node, nodeIndex) {
+        return [
+            h('div', [
+                
+            ])
+        ];
+    },
+    generateCode(nodeName, node) {
+        return `
+// Requires <script src="https://cdn.jsdelivr.net/npm/webmidi"></script>
+// Requires <script src="https://tonejs.github.io/build/Tone.js"></script>
+`;
+    }
+}
+},{}],8:[function(require,module,exports){
 module.exports = {
     default () {
         return {
@@ -410,7 +480,7 @@ ${nodeName}.start();
 `;
     }
 }
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 module.exports = {
     default () {
         return {
@@ -570,7 +640,7 @@ function drawFrequency(canvas, analyser) {
         x += barWidth + 1;
     }
 }
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 module.exports = {
     default () {
         return {
@@ -686,7 +756,7 @@ ${nodeName}.type.value = "${node.options.type}";
 `;
     }
 }
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 function intArrayFromBase64(s) {
     var decoded = atob(s);
     var bytes = new Uint8Array(decoded.length);
@@ -873,7 +943,7 @@ const ${nodeName} = await audioCtx.audioWorklet.addModule(\`data:application/jav
         }
     }
 }
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 module.exports = {
     default () {
         return {
@@ -925,7 +995,7 @@ ${nodeName}.delayTime.value = ${node.options.value};
 `;
     }
 }
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 module.exports = {
     default () {
         return {
@@ -977,7 +1047,7 @@ ${nodeName}.gain.value = ${node.options.value};
 `;
     }
 }
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 module.exports = {
     delay: require('./delay'),
     gain: require('./gain'),
@@ -985,11 +1055,11 @@ module.exports = {
     analyser: require('./analyser'),
     customWorklet: require('./customWorklet'),
 };
-},{"./analyser":8,"./biquadFilter":9,"./customWorklet":10,"./delay":11,"./gain":12}],14:[function(require,module,exports){
+},{"./analyser":9,"./biquadFilter":10,"./customWorklet":11,"./delay":12,"./gain":13}],15:[function(require,module,exports){
 module.exports = {
     speaker: require('./speaker')
 };
-},{"./speaker":15}],15:[function(require,module,exports){
+},{"./speaker":16}],16:[function(require,module,exports){
 module.exports = {
     initWANode(audioCtx, node) {
         return Promise.resolve(audioCtx.destination);
