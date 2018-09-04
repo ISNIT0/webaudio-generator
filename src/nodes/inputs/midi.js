@@ -21,10 +21,6 @@ module.exports = {
         };
     },
     initWANode(audioCtx, node) {
-        setTimeout(() => {
-            synth.triggerRelease();
-        }, 1000);
-
         WebMidi.enable(function (err) {
             // https://github.com/djipco/webmidi
             if (err) {
