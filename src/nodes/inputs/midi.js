@@ -1,5 +1,19 @@
+Tone.setContext(audioCtx);
+var synth = new Tone.Synth({
+    "oscillator": {
+        "type": "pwm",
+        "modulationFrequency": 0.2
+    },
+    "envelope": {
+        "attack": 0.02,
+        "decay": 0.1,
+        "sustain": 0.2,
+        "release": 0.9,
+    }
+});
+
 module.exports = {
-    default () {
+    default() {
         return {
             "kind": "input",
             "type": "midi",
@@ -7,30 +21,42 @@ module.exports = {
         };
     },
     initWANode(audioCtx, node) {
-        navigator.requestMIDIAccess()
-            .then(function (access) {
+        setTimeout(() => {
+            synth.triggerRelease();
+        }, 1000);
 
-                // Get lists of available MIDI controllers
-                const inputs = access.inputs.values();
-                const outputs = access.outputs.values();
+        synth.output.connect(audioCtx.destination);
+        WebMidi.enable(function (err) {
+            // https://github.com/djipco/webmidi
+            if (err) {
+                alert("WebMidi could not be enabled.");
+            }
 
-                const gain = audioCtx.createGain();
-                
-                access.onstatechange = function (e) {
+            output = WebMidi.outputs[0];
+            input = WebMidi.inputs[0];
 
-                    // Print information about the (dis)connected MIDI controller
-                    console.log(e.port.name, e.port.manufacturer, e.port.state);
-                };
+            input.addListener('noteon', "all",
+                function (e) {
+                    console.log("Received 'noteon' message (" + e.note.name + e.note.octave + ").");
+                    output.playNote(`${e.note.name}${e.note.octave}`, 'all', { velocity: 0 });
+                    synth.triggerAttack(`${e.note.name}${e.note.octave}`);
+                }
+            );
+            input.addListener('noteoff', "all",
+                function (e) {
+                    console.log("Received 'noteon' message (" + e.note.name + e.note.octave + ").");
+                    output.playNote(`${e.note.name}${e.note.octave}`, 'all', { velocity: 0 });
+                    synth.triggerRelease(`${e.note.name}${e.note.octave}`);
+                }
+            );
 
-
-                return Promise.resolve(gain);
-            });
+        });
     },
     updateWANode(oscillator, node) {
         oscillator.type = node.options.waveType;
         oscillator.frequency = node.options.frequency;
     },
-    renderView(state, affect, node, nodeIndex) {},
+    renderView(state, affect, node, nodeIndex) { },
     renderDetail(state, affect, node, nodeIndex) {
         return [
             h('div', [
@@ -41,19 +67,17 @@ module.exports = {
                         affect.set(`graph.nodes.${nodeIndex}.options.waveType`, ev.target.value);
                     }
                 }, [
-                    h('option', 'sine'),
-                    h('option', 'square'),
-                    h('option', 'sawtooth')
-                ])
+                        h('option', 'sine'),
+                        h('option', 'square'),
+                        h('option', 'sawtooth')
+                    ])
             ])
         ];
     },
     generateCode(nodeName, node) {
         return `
-const ${nodeName} = audioCtx.createOscillator();
-${nodeName}.type = "${node.options.waveType}";
-${nodeName}.frequency = ${node.options.frequency};
-${nodeName}.start();
+// Requires <script src="https://cdn.jsdelivr.net/npm/webmidi"></script>
+// Requires <script src="https://tonejs.github.io/build/Tone.js"></script>
 `;
     }
 }
