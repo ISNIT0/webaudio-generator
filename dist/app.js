@@ -364,20 +364,6 @@ const ${nodeName} = audioCtx.createMediaStreamSource(
     }
 };
 },{}],7:[function(require,module,exports){
-Tone.setContext(audioCtx);
-var synth = new Tone.Synth({
-    "oscillator": {
-        "type": "pwm",
-        "modulationFrequency": 0.2
-    },
-    "envelope": {
-        "attack": 0.02,
-        "decay": 0.1,
-        "sustain": 0.2,
-        "release": 0.9,
-    }
-});
-
 module.exports = {
     default() {
         return {
@@ -387,6 +373,9 @@ module.exports = {
         };
     },
     initWANode(audioCtx, node) {
+        Tone.setContext(audioCtx);
+        const synth = new Tone.Synth();
+
         WebMidi.enable(function (err) {
             // https://github.com/djipco/webmidi
             if (err) {
@@ -399,15 +388,15 @@ module.exports = {
             input.addListener('noteon', "all",
                 function (e) {
                     console.log("Received 'noteon' message (" + e.note.name + e.note.octave + ").");
-                    output.playNote(`${e.note.name}${e.note.octave}`, 'all', { velocity: 0 });
+                    output.playNote(`${e.note.name}${e.note.octave}`, 'all', { velocity: 1 });
                     synth.triggerAttack(`${e.note.name}${e.note.octave}`);
                 }
             );
             input.addListener('noteoff', "all",
                 function (e) {
-                    console.log("Received 'noteon' message (" + e.note.name + e.note.octave + ").");
+                    console.log("Received 'noteoff' message (" + e.note.name + e.note.octave + ").");
                     output.playNote(`${e.note.name}${e.note.octave}`, 'all', { velocity: 0 });
-                    synth.triggerRelease(`${e.note.name}${e.note.octave}`);
+                    synth.triggerRelease();
                 }
             );
         });
@@ -415,13 +404,15 @@ module.exports = {
         return synth.output;
     },
     updateWANode(waNode, node) {
-        
+
     },
     renderView(state, affect, node, nodeIndex) { },
     renderDetail(state, affect, node, nodeIndex) {
         return [
             h('div', [
-                
+                h('p', [
+                    'Please connect MIDI controller before creating this MIDI node'
+                ])
             ])
         ];
     },
