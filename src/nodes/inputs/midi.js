@@ -59,17 +59,7 @@ module.exports = {
     renderDetail(state, affect, node, nodeIndex) {
         return [
             h('div', [
-                h('strong', 'WaveType:'),
-                h('select', {
-                    value: node.options.waveType,
-                    onchange(ev) {
-                        affect.set(`graph.nodes.${nodeIndex}.options.waveType`, ev.target.value);
-                    }
-                }, [
-                        h('option', 'sine'),
-                        h('option', 'square'),
-                        h('option', 'sawtooth')
-                    ])
+                
             ])
         ];
     },
