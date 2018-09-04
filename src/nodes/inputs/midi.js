@@ -25,7 +25,6 @@ module.exports = {
             synth.triggerRelease();
         }, 1000);
 
-        synth.output.connect(audioCtx.destination);
         WebMidi.enable(function (err) {
             // https://github.com/djipco/webmidi
             if (err) {
@@ -49,12 +48,12 @@ module.exports = {
                     synth.triggerRelease(`${e.note.name}${e.note.octave}`);
                 }
             );
-
         });
+
+        return synth.output;
     },
-    updateWANode(oscillator, node) {
-        oscillator.type = node.options.waveType;
-        oscillator.frequency = node.options.frequency;
+    updateWANode(waNode, node) {
+        
     },
     renderView(state, affect, node, nodeIndex) { },
     renderDetail(state, affect, node, nodeIndex) {
