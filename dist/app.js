@@ -246,7 +246,7 @@ module.exports = {
     output:require('./outputs/index'),
     modifier:require('./modifiers/index')
 }
-},{"./inputs/index":5,"./modifiers/index":14,"./outputs/index":15}],4:[function(require,module,exports){
+},{"./inputs/index":5,"./modifiers/index":15,"./outputs/index":16}],4:[function(require,module,exports){
 module.exports = {
     default () {
         return {
@@ -307,20 +307,20 @@ module.exports = {
     },
     generateCode(nodeName, node) {
         return `
-const audioFileRequest = new XMLHttpRequest();
-audioFileRequest.open('GET', "${node.options.filePath}", true);
-audioFileRequest.responseType = 'arraybuffer';
+const ${nodeName}FileRequest = new XMLHttpRequest();
+${nodeName}FileRequest.open('GET', "https://webaudio.simmsreeve.com/${node.options.filePath}", true);
+${nodeName}FileRequest.responseType = 'arraybuffer';
 
-const audioFilePromise = new Promise((resolve, reject) => {
-    audioFileRequest.onload = function() {
-        audioCtx.decodeAudioData(audioFileRequest.response, resolve, reject);
+const ${nodeName}FilePromise = new Promise((resolve, reject) => {
+    ${nodeName}FileRequest.onload = function() {
+        audioCtx.decodeAudioData(${nodeName}FileRequest.response, resolve, reject);
     }
-    audioFileRequest.onerror = reject;
+    ${nodeName}FileRequest.onerror = reject;
 })
-audioFileRequest.send();
+${nodeName}FileRequest.send();
 
 const ${nodeName} = audioCtx.createBufferSource();
-${nodeName}.buffer = await audioFilePromise;
+${nodeName}.buffer = await ${nodeName}FilePromise;
 ${nodeName}.start(0);
 `;
     }
@@ -768,6 +768,71 @@ ${nodeName}.type.value = "${node.options.type}";
     }
 }
 },{}],11:[function(require,module,exports){
+module.exports = {
+    default () {
+        return {
+            kind: 'modifier',
+            type: 'convreverb',
+            options: {
+                normalized: true
+            }
+        }
+    },
+    initWANode(audioCtx, node) {
+
+        return new Promise(function (resolve, reject) {
+
+            (new BufferLoader(
+                audioCtx, ['./res/conv-ir.wav'],
+                async function ([buffer]) {
+
+                    const convNode = audioCtx.createConvolver();
+                    convNode.buffer = buffer;
+                    resolve(convNode);
+
+                }
+            )).load();
+
+        });
+    },
+    updateWANode(convreverbNode, node) {
+        convreverbNode.normalize = !!node.options.normalized;
+    },
+    renderView(state, affect, node, nodeIndex) {
+        return [
+            h('h3', `Conv Reverb`),
+            h('div', {
+                style: {
+                    width: '100%'
+                }
+            }, [])
+        ]
+    },
+    renderDetail(state, affect, node, nodeIndex) {
+
+    },
+    generateCode(nodeName, node) {
+        return `
+
+
+const ${nodeName}FileRequest = new XMLHttpRequest();
+${nodeName}FileRequest.open('GET', "https://webaudio.simmsreeve.com/res/conv-ir.wav", true);
+${nodeName}FileRequest.responseType = 'arraybuffer';
+
+const ${nodeName}FilePromise = new Promise((resolve, reject) => {
+    ${nodeName}FileRequest.onload = function() {
+        audioCtx.decodeAudioData(${nodeName}FileRequest.response, resolve, reject);
+    }
+    ${nodeName}FileRequest.onerror = reject;
+})
+${nodeName}FileRequest.send();
+
+const ${nodeName} = audioCtx.createConvolver();
+${nodeName}.buffer = await ${nodeName}FilePromise;
+`;
+    }
+}
+},{}],12:[function(require,module,exports){
 function intArrayFromBase64(s) {
     var decoded = atob(s);
     var bytes = new Uint8Array(decoded.length);
@@ -954,7 +1019,7 @@ const ${nodeName} = await audioCtx.audioWorklet.addModule(\`data:application/jav
         }
     }
 }
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 module.exports = {
     default () {
         return {
@@ -1006,7 +1071,7 @@ ${nodeName}.delayTime.value = ${node.options.value};
 `;
     }
 }
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 module.exports = {
     default () {
         return {
@@ -1058,19 +1123,20 @@ ${nodeName}.gain.value = ${node.options.value};
 `;
     }
 }
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 module.exports = {
     delay: require('./delay'),
     gain: require('./gain'),
     biquadFilter: require('./biquadFilter'),
     analyser: require('./analyser'),
     customWorklet: require('./customWorklet'),
+    convreverb: require('./convreverb')
 };
-},{"./analyser":9,"./biquadFilter":10,"./customWorklet":11,"./delay":12,"./gain":13}],15:[function(require,module,exports){
+},{"./analyser":9,"./biquadFilter":10,"./convreverb":11,"./customWorklet":12,"./delay":13,"./gain":14}],16:[function(require,module,exports){
 module.exports = {
     speaker: require('./speaker')
 };
-},{"./speaker":16}],16:[function(require,module,exports){
+},{"./speaker":17}],17:[function(require,module,exports){
 module.exports = {
     initWANode(audioCtx, node) {
         return Promise.resolve(audioCtx.destination);
