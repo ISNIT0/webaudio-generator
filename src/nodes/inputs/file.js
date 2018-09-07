@@ -58,20 +58,20 @@ module.exports = {
     },
     generateCode(nodeName, node) {
         return `
-const audioFileRequest = new XMLHttpRequest();
-audioFileRequest.open('GET', "${node.options.filePath}", true);
-audioFileRequest.responseType = 'arraybuffer';
+const ${nodeName}FileRequest = new XMLHttpRequest();
+${nodeName}FileRequest.open('GET', "https://webaudio.simmsreeve.com/${node.options.filePath}", true);
+${nodeName}FileRequest.responseType = 'arraybuffer';
 
-const audioFilePromise = new Promise((resolve, reject) => {
-    audioFileRequest.onload = function() {
-        audioCtx.decodeAudioData(audioFileRequest.response, resolve, reject);
+const ${nodeName}FilePromise = new Promise((resolve, reject) => {
+    ${nodeName}FileRequest.onload = function() {
+        audioCtx.decodeAudioData(${nodeName}FileRequest.response, resolve, reject);
     }
-    audioFileRequest.onerror = reject;
+    ${nodeName}FileRequest.onerror = reject;
 })
-audioFileRequest.send();
+${nodeName}FileRequest.send();
 
 const ${nodeName} = audioCtx.createBufferSource();
-${nodeName}.buffer = await audioFilePromise;
+${nodeName}.buffer = await ${nodeName}FilePromise;
 ${nodeName}.start(0);
 `;
     }

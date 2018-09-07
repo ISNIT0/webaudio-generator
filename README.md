@@ -44,8 +44,9 @@ Also, I cringe at the method used to generate code. It's disgusting and you shou
 
 ```bash
 > brew install fswatch
-> npm i -g browserify lessc
+> npm i -g browserify less
 
+> npm i
 > ./build.sh
 > ./watch.sh
 ```

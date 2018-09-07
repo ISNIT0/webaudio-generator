@@ -4,4 +4,5 @@ module.exports = {
     biquadFilter: require('./biquadFilter'),
     analyser: require('./analyser'),
     customWorklet: require('./customWorklet'),
+    convreverb: require('./convreverb')
 };
