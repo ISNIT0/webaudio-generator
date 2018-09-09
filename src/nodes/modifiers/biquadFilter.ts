@@ -1,5 +1,7 @@
-module.exports = {
-    default () {
+import { h } from 'nimble';
+
+export default class BiQuadFilterModifierNode implements WAGenNode {
+    getDefaultNode() {
         return {
             kind: 'modifier',
             type: 'biquadFilter',
@@ -11,42 +13,42 @@ module.exports = {
                 detune: 0,
             }
         }
-    },
-    initWANode(audioCtx, node) {
+    }
+    initWANode(audioCtx: AudioContext, node: NodeDef) {
         return Promise.resolve(audioCtx.createBiquadFilter());
-    },
-    updateWANode(filterNode, node) {
+    }
+    updateWANode(filterNode: BiquadFilterNode, node: NodeDef) {
         filterNode.gain.value = node.options.gain;
         filterNode.Q.value = node.options.Q;
         filterNode.detune.value = node.options.detune;
         filterNode.frequency.value = node.options.frequency;
-        filterNode.type.value = node.options.type;
-    },
-    renderView(state, affect, node, nodeIndex) {
+        (<any>filterNode).type.value = node.options.type;
+    }
+    renderView(state: State, affect: Affect, node: NodeDef, nodeIndex: number) {
         return [
             h('h3', `Biquad Filter`),
             h('span', `${node.options.frequency}`)
         ]
-    },
-    renderDetail(state, affect, node, nodeIndex) {
+    }
+    renderDetail(state: State, affect: Affect, node: NodeDef, nodeIndex: number) {
         return [
             h('div', [
                 h('strong', 'Type:'),
                 h('select', {
                     value: node.options.type,
-                    onchange(ev) {
+                    onchange(ev:any) {
                         affect.set(`graph.nodes.${nodeIndex}.options.type`, ev.target.value);
                     }
                 }, [
-                    h('option', 'lowpass'),
-                    h('option', 'highpass'),
-                    h('option', 'bandpass'),
-                    h('option', 'lowshelf'),
-                    h('option', 'highshelf'),
-                    h('option', 'peaking'),
-                    h('option', 'notch'),
-                    h('option', 'allpass')
-                ])
+                        h('option', 'lowpass'),
+                        h('option', 'highpass'),
+                        h('option', 'bandpass'),
+                        h('option', 'lowshelf'),
+                        h('option', 'highshelf'),
+                        h('option', 'peaking'),
+                        h('option', 'notch'),
+                        h('option', 'allpass')
+                    ])
             ]),
             h('div', [
                 h('strong', 'Q:'),
@@ -56,7 +58,7 @@ module.exports = {
                     max: 10,
                     step: 0.5,
                     value: node.options.Q,
-                    oninput(ev) {
+                    oninput(ev:any) {
                         affect.set(`graph.nodes.${nodeIndex}.options.Q`, ev.target.value);
                     }
                 })
@@ -69,7 +71,7 @@ module.exports = {
                     max: 10000,
                     step: 1,
                     value: node.options.frequency,
-                    oninput(ev) {
+                    oninput(ev:any) {
                         affect.set(`graph.nodes.${nodeIndex}.options.frequency`, ev.target.value);
                     }
                 })
@@ -82,7 +84,7 @@ module.exports = {
                     max: 3,
                     step: 0.1,
                     value: node.options.gain,
-                    oninput(ev) {
+                    oninput(ev:any) {
                         affect.set(`graph.nodes.${nodeIndex}.options.gain`, ev.target.value);
                     }
                 })
@@ -95,14 +97,14 @@ module.exports = {
                     max: 10,
                     step: 0.5,
                     value: node.options.detune,
-                    oninput(ev) {
+                    oninput(ev: any) {
                         affect.set(`graph.nodes.${nodeIndex}.options.detune`, ev.target.value);
                     }
                 })
             ])
         ];
-    },
-    generateCode(nodeName, node) {
+    }
+    generateCode(nodeName: string, node: NodeDef) {
         return `
 const ${nodeName} = audioCtx.createBiquadFilter();
 ${nodeName}.gain.value = ${node.options.gain};

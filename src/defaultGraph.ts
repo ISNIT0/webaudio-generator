@@ -1,4 +1,4 @@
-{
+export default <NodeGraph>{
     "nodes": [{
         "kind": "input",
         "type": "oscillator",

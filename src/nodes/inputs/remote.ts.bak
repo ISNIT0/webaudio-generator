@@ -1,5 +1,7 @@
-module.exports = {
-    default () {
+import { h } from 'nimble';
+
+export default class RemoteInputNode implements WAGenNode {
+    getDefaultNode() {
         return {
             "kind": "input",
             "type": "remote",

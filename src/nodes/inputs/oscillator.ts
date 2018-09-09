@@ -1,5 +1,7 @@
-module.exports = {
-    default () {
+import { h } from 'nimble';
+
+export default class OscillatorInputNode implements WAGenNode {
+    getDefaultNode() {
         return {
             "kind": "input",
             "type": "oscillator",
@@ -8,35 +10,35 @@ module.exports = {
                 "frequency": 1000
             }
         };
-    },
-    initWANode(audioCtx, node) {
+    }
+    initWANode(audioCtx: AudioContext, node: NodeDef) {
         const oscillator = audioCtx.createOscillator();
         oscillator.start();
         return Promise.resolve(oscillator);
-    },
-    updateWANode(oscillator, node) {
+    }
+    updateWANode(oscillator: AudioNode & OscillatorNode, node: NodeDef) {
         oscillator.type = node.options.waveType;
-        oscillator.frequency = node.options.frequency;
-    },
-    renderView(state, affect, node, nodeIndex) {},
-    renderDetail(state, affect, node, nodeIndex) {
+        oscillator.frequency.setValueAtTime(node.options.frequency, oscillator.context.currentTime);
+    }
+    renderView(state: any, affect: Affect, node: NodeDef, nodeIndex: number) { return [] }
+    renderDetail(state: any, affect: Affect, node: NodeDef, nodeIndex: number) {
         return [
             h('div', [
                 h('strong', 'WaveType:'),
                 h('select', {
                     value: node.options.waveType,
-                    onchange(ev) {
+                    onchange(ev: any) {
                         affect.set(`graph.nodes.${nodeIndex}.options.waveType`, ev.target.value);
                     }
                 }, [
-                    h('option', 'sine'),
-                    h('option', 'square'),
-                    h('option', 'sawtooth')
-                ])
+                        h('option', 'sine'),
+                        h('option', 'square'),
+                        h('option', 'sawtooth')
+                    ])
             ])
         ];
-    },
-    generateCode(nodeName, node) {
+    }
+    generateCode(nodeName: string, node: NodeDef) {
         return `
 const ${nodeName} = audioCtx.createOscillator();
 ${nodeName}.type = "${node.options.waveType}";

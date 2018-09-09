@@ -9,8 +9,15 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/es6-shim": "^0.31.37",
+    "@types/jquery": "^3.3.6",
+    "@types/node": "^10.9.4",
+    "@types/webaudioapi": "0.0.27",
     "assemblyscript": "github:AssemblyScript/assemblyscript",
     "body-parser": "1.18.3",
-    "express": "4.16.3"
+    "express": "4.16.3",
+    "nimble": "git+https://github.com/ISNIT0/nimble-js.git",
+    "tone": "^0.12.80",
+    "webmidi": "^2.2.0"
   }
 }

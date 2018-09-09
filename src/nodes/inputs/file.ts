@@ -1,5 +1,8 @@
-module.exports = {
-    default () {
+import BufferLoader from '../../BufferLoader';
+import { h } from 'nimble';
+
+export default class FileInputNode implements WAGenNode {
+    getDefaultNode() {
         return {
             "kind": "input",
             "type": "file",
@@ -7,13 +10,13 @@ module.exports = {
                 "filePath": "./res/br-jam-loop.wav"
             }
         };
-    },
-    initWANode(audioCtx, node) {
+    }
+    initWANode(audioCtx: AudioContext, node: NodeDef) {
         const bufferSource = audioCtx.createBufferSource();
         bufferSource.loop = true;
         return Promise.resolve(bufferSource);
-    },
-    updateWANode(bufferSource, node, nodeIndex, graph) {
+    }
+    updateWANode(bufferSource: AudioBufferSourceNode, node: NodeDef, nodeIndex: number, graph: NodeGraph) {
         (new BufferLoader(
             bufferSource.context, [node.options.filePath],
             async function ([buffer]) {
@@ -28,35 +31,37 @@ module.exports = {
                     newSource.start(0);
                     try {
                         bufferSource.stop();
-                    } catch (e) {}
+                    } catch (e) { }
                     bufferSource.disconnect(nextNode.waNode);
                     node.waNode = newSource;
                 }
             }
         )).load();
-    },
-    renderView(state, affect, node, nodeIndex) {},
-    renderDetail(state, affect, node, nodeIndex) {
+    }
+    renderView(state: any, affect: Affect, node: NodeDef, nodeIndex: number) {
+        return [];
+    }
+    renderDetail(state: any, affect: Affect, node: NodeDef, nodeIndex: number) {
         return [
             h('div', [
                 h('strong', 'Audio File:'),
                 h('select', {
                     value: node.options.filePath,
-                    onchange(ev) {
+                    onchange(ev: any) {
                         affect.set(`graph.nodes.${nodeIndex}.options.filePath`, ev.target.value);
                     }
                 }, [
-                    h('option', {
-                        value: './res/br-jam-loop.wav'
-                    }, 'Jam Loop'),
-                    h('option', {
-                        value: './res/techno.wav'
-                    }, 'Techno')
-                ])
+                        h('option', {
+                            value: './res/br-jam-loop.wav'
+                        }, 'Jam Loop'),
+                        h('option', {
+                            value: './res/techno.wav'
+                        }, 'Techno')
+                    ])
             ])
         ];
-    },
-    generateCode(nodeName, node) {
+    }
+    generateCode(nodeName: string, node: NodeDef) {
         return `
 const ${nodeName}FileRequest = new XMLHttpRequest();
 ${nodeName}FileRequest.open('GET', "https://webaudio.simmsreeve.com/${node.options.filePath}", true);

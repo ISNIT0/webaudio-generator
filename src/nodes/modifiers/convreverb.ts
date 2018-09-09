@@ -1,5 +1,8 @@
-module.exports = {
-    default () {
+import BufferLoader from '../../BufferLoader';
+import { h } from 'nimble';
+
+export default class BiQuadFilterModifierNode implements WAGenNode {
+    getDefaultNode() {
         return {
             kind: 'modifier',
             type: 'convreverb',
@@ -7,8 +10,8 @@ module.exports = {
                 normalized: true
             }
         }
-    },
-    initWANode(audioCtx, node) {
+    }
+    initWANode(audioCtx: AudioContext, node: NodeDef) {
 
         return new Promise(function (resolve, reject) {
 
@@ -24,11 +27,11 @@ module.exports = {
             )).load();
 
         });
-    },
-    updateWANode(convreverbNode, node) {
+    }
+    updateWANode(convreverbNode: ConvolverNode, node: NodeDef) {
         convreverbNode.normalize = !!node.options.normalized;
-    },
-    renderView(state, affect, node, nodeIndex) {
+    }
+    renderView(state: State, affect: Affect, node: NodeDef, nodeIndex: number) {
         return [
             h('h3', `Conv Reverb`),
             h('div', {
@@ -37,13 +40,12 @@ module.exports = {
                 }
             }, [])
         ]
-    },
-    renderDetail(state, affect, node, nodeIndex) {
-
-    },
-    generateCode(nodeName, node) {
+    }
+    renderDetail(state: State, affect: Affect, node: NodeDef, nodeIndex: number) {
+        return [];
+    }
+    generateCode(nodeName: string, node: NodeDef) {
         return `
-
 
 const ${nodeName}FileRequest = new XMLHttpRequest();
 ${nodeName}FileRequest.open('GET', "https://webaudio.simmsreeve.com/res/conv-ir.wav", true);

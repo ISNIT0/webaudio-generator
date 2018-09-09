@@ -1,4 +1,6 @@
-module.exports = {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = {
     delay: require('./delay'),
     gain: require('./gain'),
     biquadFilter: require('./biquadFilter'),

@@ -1,5 +1,7 @@
-module.exports = {
-    default () {
+import { h } from 'nimble';
+
+export default class AnalyserModifierNode implements WAGenNode {
+    getDefaultNode() {
         return {
             kind: 'modifier',
             type: 'analyser',
@@ -7,19 +9,19 @@ module.exports = {
                 fftSize: 13
             }
         }
-    },
-    initWANode(audioCtx, node) {
+    }
+    initWANode(audioCtx: AudioContext, node: NodeDef) {
         return Promise.resolve(audioCtx.createAnalyser());
-    },
-    updateWANode(analyserNode, node) {
+    }
+    updateWANode(analyserNode: AnalyserNode & AudioNode, node: NodeDef) {
         analyserNode.fftSize = Math.pow(2, node.options.fftSize);
-    },
-    renderView(state, affect, node, nodeIndex) {
+    }
+    renderView(state: State, affect: Affect, node: NodeDef, nodeIndex: number) {
         return [
             h('h3', `Analyser`)
         ]
-    },
-    renderDetail(state, affect, node, nodeIndex) {
+    }
+    renderDetail(state: State, affect: Affect, node: NodeDef, nodeIndex: number) {
         const analyser = node.waNode;
         return [
             h('div', [
@@ -33,7 +35,7 @@ module.exports = {
                     max: 15,
                     step: 1,
                     value: node.options.fftSize,
-                    oninput(ev) {
+                    oninput(ev: any) {
                         affect.set(`graph.nodes.${nodeIndex}.options.fftSize`, ev.target.value);
                     }
                 })
@@ -44,11 +46,11 @@ module.exports = {
                     width: '100%',
                     height: '100px'
                 },
-                oncreate(element, lastProps) {
+                oncreate(element: HTMLCanvasElement, lastProps: {}) {
                     drawOscilloscope(element, analyser);
                 },
-                ondestroy(element) {
-                    element.isDestroyed = true;
+                ondestroy(element: HTMLCanvasElement) {
+                    (<any>element).isDestroyed = true;
                 }
             }),
             h('h5', 'Frequency Distribution:'),
@@ -57,16 +59,16 @@ module.exports = {
                     width: '100%',
                     height: '100px'
                 },
-                oncreate(element, lastProps) {
+                oncreate(element:HTMLCanvasElement, lastProps:{}) {
                     drawFrequency(element, analyser);
                 },
-                ondestroy(element) {
-                    element.isDestroyed = true;
+                ondestroy(element:HTMLCanvasElement) {
+                    (<any>element).isDestroyed = true;
                 }
             })
         ];
-    },
-    generateCode(nodeName, node) {
+    }
+    generateCode(nodeName:string, node:NodeDef) {
         return `
 const ${nodeName} = audioCtx.createAnalyser();
 const ${nodeName}RenderFrame = document.createElement('div');
@@ -84,15 +86,15 @@ drawFrequency(${nodeName}Frequency, ${nodeName});
 }
 
 
-function drawOscilloscope(canvas, analyser) {
+function drawOscilloscope(canvas:HTMLCanvasElement, analyser:AnalyserNode) {
 
-    if (!canvas.isDestroyed) {
+    if (!(<any>canvas).isDestroyed) {
         requestAnimationFrame(() => {
             drawOscilloscope(canvas, analyser);
         });
     }
 
-    const canvasCtx = canvas.getContext('2d');
+    const canvasCtx = <CanvasRenderingContext2D>(<HTMLCanvasElement>canvas).getContext('2d');
 
     const bufferLength = analyser.frequencyBinCount;
     const dataArray = new Uint8Array(bufferLength);
@@ -127,15 +129,15 @@ function drawOscilloscope(canvas, analyser) {
     canvasCtx.stroke();
 }
 
-function drawFrequency(canvas, analyser) {
+function drawFrequency(canvas:HTMLCanvasElement, analyser:AnalyserNode) {
 
-    if (!canvas.isDestroyed) {
+    if (!(<any>canvas).isDestroyed) {
         requestAnimationFrame(() => {
             drawFrequency(canvas, analyser);
         });
     }
 
-    const canvasCtx = canvas.getContext('2d');
+    const canvasCtx = <CanvasRenderingContext2D>canvas.getContext('2d');
 
     const bufferLength = analyser.frequencyBinCount;
     const dataArray = new Uint8Array(bufferLength);
