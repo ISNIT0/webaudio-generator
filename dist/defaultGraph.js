@@ -6,7 +6,7 @@ exports.default = {
             "type": "oscillator",
             "options": {
                 "waveType": "sine",
-                "frequency": 1000
+                "frequency": 500
             }
         }, {
             "kind": "modifier",
