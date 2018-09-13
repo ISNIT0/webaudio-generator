@@ -982,6 +982,10 @@ exports.default = {
     },
     renderDetail: function (state, affect, node, nodeIndex) {
         return [
+            nimble_1.h('p', [
+                "This node will compile the below strongly typed TypeScript into WebAssembly and create a WebAudio CustomWorkletNode that processes all audio. ",
+                nimble_1.h('a', { href: 'https://github.com/AssemblyScript/assemblyscript', target: '_blank' }, 'See AssemblyScript')
+            ]),
             nimble_1.h('div', {
                 style: {
                     width: '380px',

@@ -46,6 +46,10 @@ export default <WAGenNode>{
     },
     renderDetail(state: State, affect: Affect, node: NodeDef, nodeIndex: number) {
         return [
+            h('p', [
+                `This node will compile the below strongly typed TypeScript into WebAssembly and create a WebAudio CustomWorkletNode that processes all audio. `,
+                h('a', { href: 'https://github.com/AssemblyScript/assemblyscript', target: '_blank' }, 'See AssemblyScript')
+            ]),
             h('div', {
                 style: {
                     width: '380px',
