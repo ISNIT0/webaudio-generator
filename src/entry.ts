@@ -23,7 +23,7 @@ function makeArrow(state: State, affect: Affect, index: number, direction = 'dow
             cursor: 'pointer'
         },
         onclick: function () {
-            addNode(state, affect, index + 1, nodeDefs.modifier.gain.default())
+            addNode(state, affect, index + 1, nodeDefs.modifier.gain.getDefaultNode())
         }
     }, [
             h('path', {
@@ -125,7 +125,7 @@ function renderNode(state: State, affect: Affect, node: NodeDef, index: number) 
                                 affect.set('selectedNode', -1);
                                 const newType = ev.target.value;
                                 const newNodeDef = nodeDefs[node.kind][newType];
-                                const newNode = newNodeDef.default();
+                                const newNode = newNodeDef.getDefaultNode();
 
                                 newNode.waNode = await newNodeDef.initWANode(state.audioCtx, newNode);
                                 newNodeDef.updateWANode(newNode.waNode, newNode, index, state.graph);

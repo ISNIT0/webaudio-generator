@@ -58,7 +58,7 @@ function makeArrow(state, affect, index, direction) {
             cursor: 'pointer'
         },
         onclick: function () {
-            addNode(state, affect, index + 1, index_1.default.modifier.gain.default());
+            addNode(state, affect, index + 1, index_1.default.modifier.gain.getDefaultNode());
         }
     }, [
         nimble_1.h('path', {
@@ -161,7 +161,7 @@ function renderNode(state, affect, node, index) {
                                                 affect.set('selectedNode', -1);
                                                 newType = ev.target.value;
                                                 newNodeDef = index_1.default[node.kind][newType];
-                                                newNode = newNodeDef.default();
+                                                newNode = newNodeDef.getDefaultNode();
                                                 _a = newNode;
                                                 return [4 /*yield*/, newNodeDef.initWANode(state.audioCtx, newNode)];
                                             case 1:
