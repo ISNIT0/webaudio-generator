@@ -106,18 +106,22 @@ function makeProcessorsFile(id, parsedBinary) {
 }
 function makeWorkletPromise(audioCtx, ts) {
     var id = '' + Date.now(); //TODO: better ID
-    return $.ajax("/makeWorkletBinary/" + id, {
-        data: JSON.stringify({
-            ts: ts
-        }),
-        contentType: 'application/JSON',
-        type: 'POST'
-    }).then(function (binary) {
-        var parsedBin = intArrayFromBase64(binary);
-        var fileContent = makeProcessorsFile(id, parsedBin);
-        latestParsedBin = parsedBin; //More bad things
-        return audioCtx.audioWorklet.addModule("data:application/javascript;base64," + btoa(fileContent)).then(function () {
-            return new AudioWorkletNode(audioCtx, id);
-        });
+    return new Promise(function (resolve, reject) {
+        $.ajax("/makeWorkletBinary/" + id, {
+            data: JSON.stringify({
+                ts: ts
+            }),
+            contentType: 'application/JSON',
+            type: 'POST'
+        }).then(function (binary) {
+            var parsedBin = intArrayFromBase64(binary);
+            var fileContent = makeProcessorsFile(id, parsedBin);
+            latestParsedBin = parsedBin; //More bad things
+            return audioCtx.audioWorklet.addModule("data:application/javascript;base64," + btoa(fileContent)).then(function () {
+                return new AudioWorkletNode(audioCtx, id);
+            });
+        })
+            .then(resolve)
+            .catch(reject);
     });
 }

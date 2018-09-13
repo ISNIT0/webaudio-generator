@@ -28,3 +28,4 @@ type State = {
 
 declare module 'tone';
 declare module 'webmidi';
+declare module 'intro.js';

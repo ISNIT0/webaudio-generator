@@ -169,20 +169,25 @@ registerProcessor('${id}', MyWorkletProcessor);
 
 
 
-function makeWorkletPromise(audioCtx: BaseAudioContext, ts: string) {
+function makeWorkletPromise(audioCtx: BaseAudioContext, ts: string): Promise<AudioWorkletNode> {
     const id = '' + Date.now(); //TODO: better ID
-    return $.ajax(`/makeWorkletBinary/${id}`, {
-        data: JSON.stringify({
-            ts
-        }),
-        contentType: 'application/JSON',
-        type: 'POST'
-    }).then((binary: string) => {
-        const parsedBin = intArrayFromBase64(binary);
-        const fileContent = makeProcessorsFile(id, parsedBin);
-        latestParsedBin = parsedBin; //More bad things
-        return audioCtx.audioWorklet.addModule(`data:application/javascript;base64,${btoa(fileContent)}`).then(() => {
-            return new AudioWorkletNode(audioCtx, id);
-        });
+
+    return new Promise((resolve, reject) => {
+        $.ajax(`/makeWorkletBinary/${id}`, {
+            data: JSON.stringify({
+                ts
+            }),
+            contentType: 'application/JSON',
+            type: 'POST'
+        }).then((binary: string) => {
+            const parsedBin = intArrayFromBase64(binary);
+            const fileContent = makeProcessorsFile(id, parsedBin);
+            latestParsedBin = parsedBin; //More bad things
+            return audioCtx.audioWorklet.addModule(`data:application/javascript;base64,${btoa(fileContent)}`).then(() => {
+                return new AudioWorkletNode(audioCtx, id);
+            });
+        })
+        .then(resolve)
+        .catch(reject);
     });
 }

@@ -38,6 +38,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+var intro_js_1 = __importDefault(require("intro.js"));
 var nimble_1 = require("nimble");
 window.h = nimble_1.h;
 var defaultGraph_1 = __importDefault(require("./defaultGraph"));
@@ -50,6 +51,7 @@ function makeArrow(state, affect, index, direction) {
         height: 135,
         viewBox: "0 0 38 135",
         fill: 'none',
+        'data-intro': 'Hello step one!',
         style: {
             width: '100%',
             height: '30px',
@@ -123,6 +125,7 @@ function renderNode(state, affect, node, index) {
     return nimble_1.h('div.node-cont', [
         nimble_1.h('div.node-centraliser', [
             nimble_1.h("div.node." + node.kind, {
+                'data-intro': 'Hello step two!',
                 onclick: function (ev) {
                     var isValidEv = ev.target.classList.contains('node') || ev.target.parentElement.classList.contains('node');
                     if (isValidEv) {
@@ -255,4 +258,9 @@ function initGraph(audioCtx, graph) {
         });
     });
     return graph;
+}
+if (!localStorage.getItem('completedIntro')) {
+    intro_js_1.default()
+        .onexit(function () { return localStorage.setItem('completedIntro', 'true'); })
+        .start();
 }

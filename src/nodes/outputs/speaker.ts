@@ -1,5 +1,3 @@
-import { h } from 'nimble';
-
 export default class SpeakerOutputNode implements WAGenNode {
     getDefaultNode() {
         return <any>{};

@@ -1,3 +1,4 @@
+import introJs from 'intro.js';
 import {
     makeRenderLoop,
     h
@@ -15,6 +16,7 @@ function makeArrow(state: State, affect: Affect, index: number, direction = 'dow
         height: 135,
         viewBox: "0 0 38 135",
         fill: 'none',
+        'data-intro': 'Hello step one!',
         style: {
             width: '100%',
             height: '30px',
@@ -91,6 +93,7 @@ function renderNode(state: State, affect: Affect, node: NodeDef, index: number) 
     return h('div.node-cont', [
         h('div.node-centraliser', [
             h(`div.node.${node.kind}`, {
+                'data-intro': 'Hello step two!',
                 onclick(ev: any) {
                     const isValidEv = ev.target.classList.contains('node') || ev.target.parentElement.classList.contains('node');
                     if (isValidEv) {
@@ -141,7 +144,7 @@ function renderNode(state: State, affect: Affect, node: NodeDef, index: number) 
     ]);
 }
 
-var audioCtx = new (window.AudioContext || (<any>window).webkitAudioContext)();
+var audioCtx:AudioContext = new ((<any>window).AudioContext || (<any>window).webkitAudioContext)();
 
 const initState: State = {
     graph: initGraph(audioCtx, defaultGraph),
@@ -221,4 +224,10 @@ function initGraph(audioCtx: AudioContext, graph: NodeGraph) {
     });
 
     return graph;
+}
+
+if (!localStorage.getItem('completedIntro')) {
+    introJs()
+        .onexit(() => localStorage.setItem('completedIntro', 'true'))
+        .start();
 }
