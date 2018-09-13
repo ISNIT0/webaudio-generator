@@ -6,6 +6,8 @@ A UI for generating linear WebAudio code (https://webaudio.simmsreeve.com/)
 ## Justification
 This tool was written to be used as an educational aid in a talk at [London Audio Developers Meetup](https://skillsmatter.com/groups/10788-audio-developers-meet-up).
 
+Video available [here](https://skillsmatter.com/skillscasts/12492-audio-developers-meet-up)
+
 ## Usage
 - To add a node, click on an arrow
 - To "inspect" a node, click the node
