@@ -120,7 +120,7 @@ function makeArrow(state, affect, index, direction) {
         height: 135,
         viewBox: "0 0 38 135",
         fill: 'none',
-        'data-intro': 'Hello step one!',
+        'data-intro': index === 0 ? 'Click on arrows to add a node in place' : null,
         style: {
             width: '100%',
             height: '30px',
@@ -194,7 +194,7 @@ function renderNode(state, affect, node, index) {
     return nimble_1.h('div.node-cont', [
         nimble_1.h('div.node-centraliser', [
             nimble_1.h("div.node." + node.kind, {
-                'data-intro': 'Hello step two!',
+                'data-intro': index === 1 ? 'Click on nodes to modify and delete them' : null,
                 onclick: function (ev) {
                     var isValidEv = ev.target.classList.contains('node') || ev.target.parentElement.classList.contains('node');
                     if (isValidEv) {
@@ -328,11 +328,13 @@ function initGraph(audioCtx, graph) {
     });
     return graph;
 }
-if (!localStorage.getItem('completedIntro')) {
-    intro_js_1.default()
-        .onexit(function () { return localStorage.setItem('completedIntro', 'true'); })
-        .start();
-}
+setTimeout(function () {
+    if (!localStorage.getItem('completedIntro')) {
+        intro_js_1.default()
+            .onexit(function () { return localStorage.setItem('completedIntro', 'true'); })
+            .start();
+    }
+}, 500);
 
 },{"./defaultGraph":2,"./nodes/index":4,"intro.js":19,"nimble":22}],4:[function(require,module,exports){
 "use strict";

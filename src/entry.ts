@@ -16,7 +16,7 @@ function makeArrow(state: State, affect: Affect, index: number, direction = 'dow
         height: 135,
         viewBox: "0 0 38 135",
         fill: 'none',
-        'data-intro': 'Hello step one!',
+        'data-intro': index === 0 ? 'Click on arrows to add a node in place' : null,
         style: {
             width: '100%',
             height: '30px',
@@ -93,7 +93,7 @@ function renderNode(state: State, affect: Affect, node: NodeDef, index: number) 
     return h('div.node-cont', [
         h('div.node-centraliser', [
             h(`div.node.${node.kind}`, {
-                'data-intro': 'Hello step two!',
+                'data-intro': index === 1 ? 'Click on nodes to modify and delete them' : null,
                 onclick(ev: any) {
                     const isValidEv = ev.target.classList.contains('node') || ev.target.parentElement.classList.contains('node');
                     if (isValidEv) {
@@ -226,8 +226,10 @@ function initGraph(audioCtx: AudioContext, graph: NodeGraph) {
     return graph;
 }
 
-if (!localStorage.getItem('completedIntro')) {
-    introJs()
-        .onexit(() => localStorage.setItem('completedIntro', 'true'))
-        .start();
-}
+setTimeout(() => {
+    if (!localStorage.getItem('completedIntro')) {
+        introJs()
+            .onexit(() => localStorage.setItem('completedIntro', 'true'))
+            .start();
+    }
+}, 500);
