@@ -760,7 +760,7 @@ exports.default = {
         filterNode.Q.value = node.options.Q;
         filterNode.detune.value = node.options.detune;
         filterNode.frequency.value = node.options.frequency;
-        filterNode.type.value = node.options.type;
+        filterNode.type = node.options.type;
     },
     renderView: function (state, affect, node, nodeIndex) {
         return [
