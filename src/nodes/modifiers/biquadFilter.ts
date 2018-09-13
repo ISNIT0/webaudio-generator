@@ -1,6 +1,6 @@
 import { h } from 'nimble';
 
-export default class BiQuadFilterModifierNode implements WAGenNode {
+export default <WAGenNode>{
     getDefaultNode() {
         return {
             kind: 'modifier',
@@ -13,30 +13,30 @@ export default class BiQuadFilterModifierNode implements WAGenNode {
                 detune: 0,
             }
         }
-    }
+    },
     initWANode(audioCtx: AudioContext, node: NodeDef) {
         return Promise.resolve(audioCtx.createBiquadFilter());
-    }
+    },
     updateWANode(filterNode: BiquadFilterNode, node: NodeDef) {
         filterNode.gain.value = node.options.gain;
         filterNode.Q.value = node.options.Q;
         filterNode.detune.value = node.options.detune;
         filterNode.frequency.value = node.options.frequency;
         (<any>filterNode).type.value = node.options.type;
-    }
+    },
     renderView(state: State, affect: Affect, node: NodeDef, nodeIndex: number) {
         return [
             h('h3', `Biquad Filter`),
             h('span', `${node.options.frequency}`)
         ]
-    }
+    },
     renderDetail(state: State, affect: Affect, node: NodeDef, nodeIndex: number) {
         return [
             h('div', [
                 h('strong', 'Type:'),
                 h('select', {
                     value: node.options.type,
-                    onchange(ev:any) {
+                    onchange(ev: any) {
                         affect.set(`graph.nodes.${nodeIndex}.options.type`, ev.target.value);
                     }
                 }, [
@@ -58,7 +58,7 @@ export default class BiQuadFilterModifierNode implements WAGenNode {
                     max: 10,
                     step: 0.5,
                     value: node.options.Q,
-                    oninput(ev:any) {
+                    oninput(ev: any) {
                         affect.set(`graph.nodes.${nodeIndex}.options.Q`, ev.target.value);
                     }
                 })
@@ -71,7 +71,7 @@ export default class BiQuadFilterModifierNode implements WAGenNode {
                     max: 10000,
                     step: 1,
                     value: node.options.frequency,
-                    oninput(ev:any) {
+                    oninput(ev: any) {
                         affect.set(`graph.nodes.${nodeIndex}.options.frequency`, ev.target.value);
                     }
                 })
@@ -84,7 +84,7 @@ export default class BiQuadFilterModifierNode implements WAGenNode {
                     max: 3,
                     step: 0.1,
                     value: node.options.gain,
-                    oninput(ev:any) {
+                    oninput(ev: any) {
                         affect.set(`graph.nodes.${nodeIndex}.options.gain`, ev.target.value);
                     }
                 })
@@ -103,7 +103,7 @@ export default class BiQuadFilterModifierNode implements WAGenNode {
                 })
             ])
         ];
-    }
+    },
     generateCode(nodeName: string, node: NodeDef) {
         return `
 const ${nodeName} = audioCtx.createBiquadFilter();

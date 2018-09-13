@@ -1,8 +1,15 @@
-export default {
-    delay: require('./delay'),
-    gain: require('./gain'),
-    biquadFilter: require('./biquadFilter'),
-    analyser: require('./analyser'),
-    customWorklet: require('./customWorklet'),
-    convreverb: require('./convreverb')
+import delay from './delay';
+import gain from './gain';
+import biquadFilter from './biquadFilter';
+import analyser from './analyser';
+import customWorklet from './customWorklet';
+import convreverb from './convreverb';
+
+export {
+    delay,
+    gain,
+    biquadFilter,
+    analyser,
+    customWorklet,
+    convreverb
 };

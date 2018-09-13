@@ -1,6 +1,6 @@
 import { h } from 'nimble';
 
-export default class RemoteInputNode implements WAGenNode {
+export default const RemoteInputNode <WAGenNode>{
     getDefaultNode() {
         return {
             "kind": "input",
@@ -8,7 +8,7 @@ export default class RemoteInputNode implements WAGenNode {
             "options": {}
         };
     },
-    initWANode(audioCtx, node) {
+   ,     initWANode(audioCtx, node) {
         return new Promise((resolve, reject) => {
             window.peerInstance.on('call', call => {
                 console.info(`Received Call`, call);
@@ -24,11 +24,11 @@ export default class RemoteInputNode implements WAGenNode {
             });
         });
     },
-    updateWANode(mediaStreamSource, node) {
+   ,     updateWANode(mediaStreamSource, node) {
 
     },
-    renderView(state, affect, node, nodeIndex) {},
-    renderDetail(state, affect, node, nodeIndex) {
+   ,     renderView(state, affect, node, nodeIndex) {},
+   ,     renderDetail(state, affect, node, nodeIndex) {
         return [
             h('div', [
                 h('strong', 'WaveType:'),
@@ -45,7 +45,7 @@ export default class RemoteInputNode implements WAGenNode {
             ])
         ];
     },
-    generateCode(nodeName, node) {
+   ,     generateCode(nodeName, node) {
         return '';
     }
 }

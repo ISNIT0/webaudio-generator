@@ -1,10 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var nimble_1 = require("nimble");
-var OscillatorInputNode = /** @class */ (function () {
-    function OscillatorInputNode() {
-    }
-    OscillatorInputNode.prototype.getDefaultNode = function () {
+exports.default = {
+    getDefaultNode: function () {
         return {
             "kind": "input",
             "type": "oscillator",
@@ -13,18 +11,17 @@ var OscillatorInputNode = /** @class */ (function () {
                 "frequency": 1000
             }
         };
-    };
-    OscillatorInputNode.prototype.initWANode = function (audioCtx, node) {
+    },
+    initWANode: function (audioCtx, node) {
         var oscillator = audioCtx.createOscillator();
         oscillator.start();
         return Promise.resolve(oscillator);
-    };
-    OscillatorInputNode.prototype.updateWANode = function (oscillator, node) {
+    },
+    updateWANode: function (oscillator, node) {
         oscillator.type = node.options.waveType;
         oscillator.frequency.setValueAtTime(node.options.frequency, oscillator.context.currentTime);
-    };
-    OscillatorInputNode.prototype.renderView = function (state, affect, node, nodeIndex) { return []; };
-    OscillatorInputNode.prototype.renderDetail = function (state, affect, node, nodeIndex) {
+    },
+    renderDetail: function (state, affect, node, nodeIndex) {
         return [
             nimble_1.h('div', [
                 nimble_1.h('strong', 'WaveType:'),
@@ -40,10 +37,8 @@ var OscillatorInputNode = /** @class */ (function () {
                 ])
             ])
         ];
-    };
-    OscillatorInputNode.prototype.generateCode = function (nodeName, node) {
+    },
+    generateCode: function (nodeName, node) {
         return "\nconst " + nodeName + " = audioCtx.createOscillator();\n" + nodeName + ".type = \"" + node.options.waveType + "\";\n" + nodeName + ".frequency = " + node.options.frequency + ";\n" + nodeName + ".start();\n";
-    };
-    return OscillatorInputNode;
-}());
-exports.default = OscillatorInputNode;
+    }
+};

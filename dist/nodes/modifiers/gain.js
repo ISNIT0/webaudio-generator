@@ -1,10 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var nimble_1 = require("nimble");
-var GainModifierNode = /** @class */ (function () {
-    function GainModifierNode() {
-    }
-    GainModifierNode.prototype.getDefaultNode = function () {
+exports.default = {
+    getDefaultNode: function () {
         return {
             kind: 'modifier',
             type: 'gain',
@@ -12,14 +10,14 @@ var GainModifierNode = /** @class */ (function () {
                 value: 1
             }
         };
-    };
-    GainModifierNode.prototype.initWANode = function (audioCtx, node) {
+    },
+    initWANode: function (audioCtx, node) {
         return Promise.resolve(audioCtx.createGain());
-    };
-    GainModifierNode.prototype.updateWANode = function (gainNode, node) {
+    },
+    updateWANode: function (gainNode, node) {
         gainNode.gain.value = node.options.value;
-    };
-    GainModifierNode.prototype.renderView = function (state, affect, node, nodeIndex) {
+    },
+    renderView: function (state, affect, node, nodeIndex) {
         return [
             nimble_1.h('h3', "Gain"),
             nimble_1.h('span', "" + node.options.value),
@@ -43,13 +41,8 @@ var GainModifierNode = /** @class */ (function () {
                 })
             ])
         ];
-    };
-    GainModifierNode.prototype.renderDetail = function (state, affect, node, nodeIndex) {
-        return [];
-    };
-    GainModifierNode.prototype.generateCode = function (nodeName, node) {
+    },
+    generateCode: function (nodeName, node) {
         return "\nconst " + nodeName + " = audioCtx.createGain();\n" + nodeName + ".gain.value = " + node.options.value + ";\n";
-    };
-    return GainModifierNode;
-}());
-exports.default = GainModifierNode;
+    }
+};

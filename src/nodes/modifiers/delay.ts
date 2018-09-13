@@ -1,6 +1,6 @@
 import { h } from 'nimble';
 
-export default class DelayModifierNode implements WAGenNode {
+export default <WAGenNode>{
     getDefaultNode() {
         return {
             kind: 'modifier',
@@ -9,13 +9,13 @@ export default class DelayModifierNode implements WAGenNode {
                 value: 1000
             }
         }
-    }
+    },
     initWANode(audioCtx: AudioContext, node: NodeDef) {
         return Promise.resolve(audioCtx.createDelay());
-    }
+    },
     updateWANode(delayNode: DelayNode, node: NodeDef) {
         delayNode.delayTime.value = node.options.value;
-    }
+    },
     renderView(state: State, affect: Affect, node: NodeDef, nodeIndex: number) {
         return [
             h('h3', `Delay`),
@@ -40,10 +40,7 @@ export default class DelayModifierNode implements WAGenNode {
                     })
                 ])
         ]
-    }
-    renderDetail(state: State, affect: Affect, node: NodeDef, nodeIndex: number) {
-        return [];
-    }
+    },
     generateCode(nodeName: string, node: NodeDef) {
         return `
 const ${nodeName} = audioCtx.createDelay();

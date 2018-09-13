@@ -1,6 +1,6 @@
 import { h } from 'nimble';
 
-export default class GainModifierNode implements WAGenNode {
+export default <WAGenNode>{
     getDefaultNode() {
         return {
             kind: 'modifier',
@@ -9,13 +9,13 @@ export default class GainModifierNode implements WAGenNode {
                 value: 1
             }
         }
-    }
+    },
     initWANode(audioCtx: AudioContext, node: NodeDef) {
         return Promise.resolve(audioCtx.createGain());
-    }
+    },
     updateWANode(gainNode: GainNode, node: NodeDef) {
         gainNode.gain.value = node.options.value;
-    }
+    },
     renderView(state: State, affect: Affect, node: NodeDef, nodeIndex: number) {
         return [
             h('h3', `Gain`),
@@ -40,10 +40,7 @@ export default class GainModifierNode implements WAGenNode {
                     })
                 ])
         ]
-    }
-    renderDetail(state: State, affect: Affect, node: NodeDef, nodeIndex: number) {
-        return [];
-    }
+    },
     generateCode(nodeName: string, node: NodeDef) {
         return `
 const ${nodeName} = audioCtx.createGain();

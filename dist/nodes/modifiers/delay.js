@@ -1,10 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var nimble_1 = require("nimble");
-var DelayModifierNode = /** @class */ (function () {
-    function DelayModifierNode() {
-    }
-    DelayModifierNode.prototype.getDefaultNode = function () {
+exports.default = {
+    getDefaultNode: function () {
         return {
             kind: 'modifier',
             type: 'delay',
@@ -12,14 +10,14 @@ var DelayModifierNode = /** @class */ (function () {
                 value: 1000
             }
         };
-    };
-    DelayModifierNode.prototype.initWANode = function (audioCtx, node) {
+    },
+    initWANode: function (audioCtx, node) {
         return Promise.resolve(audioCtx.createDelay());
-    };
-    DelayModifierNode.prototype.updateWANode = function (delayNode, node) {
+    },
+    updateWANode: function (delayNode, node) {
         delayNode.delayTime.value = node.options.value;
-    };
-    DelayModifierNode.prototype.renderView = function (state, affect, node, nodeIndex) {
+    },
+    renderView: function (state, affect, node, nodeIndex) {
         return [
             nimble_1.h('h3', "Delay"),
             nimble_1.h('span', "" + node.options.value),
@@ -43,13 +41,8 @@ var DelayModifierNode = /** @class */ (function () {
                 })
             ])
         ];
-    };
-    DelayModifierNode.prototype.renderDetail = function (state, affect, node, nodeIndex) {
-        return [];
-    };
-    DelayModifierNode.prototype.generateCode = function (nodeName, node) {
+    },
+    generateCode: function (nodeName, node) {
         return "\nconst " + nodeName + " = audioCtx.createDelay();\n" + nodeName + ".delayTime.value = " + node.options.value + ";\n";
-    };
-    return DelayModifierNode;
-}());
-exports.default = DelayModifierNode;
+    }
+};

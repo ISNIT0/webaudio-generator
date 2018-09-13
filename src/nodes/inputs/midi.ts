@@ -3,14 +3,14 @@ import WebMidi from 'webmidi';
 
 import { h } from 'nimble';
 
-export default class MidiInputNode implements WAGenNode {
+export default <WAGenNode>{
     getDefaultNode() {
         return {
             "kind": "input",
             "type": "midi",
             "options": {}
         };
-    }
+    },
     initWANode(audioCtx: AudioContext, node: NodeDef) {
         Tone.setContext(audioCtx);
         const synth = new Tone.Synth();
@@ -40,11 +40,10 @@ export default class MidiInputNode implements WAGenNode {
         });
 
         return synth.output;
-    }
+    },
     updateWANode(waNode: AudioNode, node: NodeDef) {
 
-    }
-    renderView(state: any, affect: Affect, node: NodeDef, nodeIndex: number) { return [] }
+    },
     renderDetail(state: any, affect: Affect, node: NodeDef, nodeIndex: number) {
         return [
             h('div', [
@@ -53,7 +52,7 @@ export default class MidiInputNode implements WAGenNode {
                 ])
             ])
         ];
-    }
+    },
     generateCode(nodeName: string, node: NodeDef) {
         return `
 // Requires <script src="https://cdn.jsdelivr.net/npm/webmidi"></script>

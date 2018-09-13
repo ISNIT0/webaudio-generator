@@ -1,6 +1,6 @@
 import { h } from 'nimble';
 
-export default class OscillatorInputNode implements WAGenNode {
+export default <WAGenNode>{
     getDefaultNode() {
         return {
             "kind": "input",
@@ -10,17 +10,16 @@ export default class OscillatorInputNode implements WAGenNode {
                 "frequency": 1000
             }
         };
-    }
+    },
     initWANode(audioCtx: AudioContext, node: NodeDef) {
         const oscillator = audioCtx.createOscillator();
         oscillator.start();
         return Promise.resolve(oscillator);
-    }
+    },
     updateWANode(oscillator: AudioNode & OscillatorNode, node: NodeDef) {
         oscillator.type = node.options.waveType;
         oscillator.frequency.setValueAtTime(node.options.frequency, oscillator.context.currentTime);
-    }
-    renderView(state: any, affect: Affect, node: NodeDef, nodeIndex: number) { return [] }
+    },
     renderDetail(state: any, affect: Affect, node: NodeDef, nodeIndex: number) {
         return [
             h('div', [
@@ -37,7 +36,7 @@ export default class OscillatorInputNode implements WAGenNode {
                     ])
             ])
         ];
-    }
+    },
     generateCode(nodeName: string, node: NodeDef) {
         return `
 const ${nodeName} = audioCtx.createOscillator();

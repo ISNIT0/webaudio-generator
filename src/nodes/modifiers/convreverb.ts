@@ -1,7 +1,7 @@
 import BufferLoader from '../../BufferLoader';
 import { h } from 'nimble';
 
-export default class BiQuadFilterModifierNode implements WAGenNode {
+export default <WAGenNode>{
     getDefaultNode() {
         return {
             kind: 'modifier',
@@ -10,7 +10,7 @@ export default class BiQuadFilterModifierNode implements WAGenNode {
                 normalized: true
             }
         }
-    }
+    },
     initWANode(audioCtx: AudioContext, node: NodeDef) {
 
         return new Promise(function (resolve, reject) {
@@ -27,10 +27,10 @@ export default class BiQuadFilterModifierNode implements WAGenNode {
             )).load();
 
         });
-    }
+    },
     updateWANode(convreverbNode: ConvolverNode, node: NodeDef) {
         convreverbNode.normalize = !!node.options.normalized;
-    }
+    },
     renderView(state: State, affect: Affect, node: NodeDef, nodeIndex: number) {
         return [
             h('h3', `Conv Reverb`),
@@ -40,10 +40,7 @@ export default class BiQuadFilterModifierNode implements WAGenNode {
                 }
             }, [])
         ]
-    }
-    renderDetail(state: State, affect: Affect, node: NodeDef, nodeIndex: number) {
-        return [];
-    }
+    },
     generateCode(nodeName: string, node: NodeDef) {
         return `
 

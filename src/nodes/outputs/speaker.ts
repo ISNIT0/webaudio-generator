@@ -1,15 +1,11 @@
-export default class SpeakerOutputNode implements WAGenNode {
+export default <WAGenNode>{
     getDefaultNode() {
         return <any>{};
-    }
+    },
     initWANode(audioCtx: AudioContext, node: NodeDef) {
         return Promise.resolve(audioCtx.destination);
-    }
-    updateWANode() { }
-    renderView(node: NodeDef) { return []; }
-    renderDetail(state: State, affect: Affect, node: NodeDef, nodeIndex: number) {
-        return [];
-    }
+    },
+    updateWANode() { },
     generateCode(nodeName: string, node: NodeDef) {
         return `
 const speakerNode = audioCtx.destination;

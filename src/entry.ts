@@ -105,7 +105,7 @@ function renderNode(state: State, affect: Affect, node: NodeDef, index: number) 
                     }
                 }
             },
-                nodeDef.renderView(state, affect, node, index) || [
+                nodeDef.renderView ? nodeDef.renderView(state, affect, node, index) : [
                     h('h3', node.kind === 'modifier' ? node.type : node.kind),
                 ]
             ),
@@ -136,7 +136,7 @@ function renderNode(state: State, affect: Affect, node: NodeDef, index: number) 
                             Object.keys(nodeDefs[node.kind]).map(type => h('option', type)))
                     ]),
                     h('hr'),
-                    nodeDef.renderDetail(state, affect, node, index)
+                    nodeDef.renderDetail ? nodeDef.renderDetail(state, affect, node, index) : null
                 ]) :
                 null,
             index !== state.graph.nodes.length - 1 ? makeArrow(state, affect, index) : null,
@@ -144,7 +144,7 @@ function renderNode(state: State, affect: Affect, node: NodeDef, index: number) 
     ]);
 }
 
-var audioCtx:AudioContext = new ((<any>window).AudioContext || (<any>window).webkitAudioContext)();
+var audioCtx: AudioContext = new ((<any>window).AudioContext || (<any>window).webkitAudioContext)();
 
 const initState: State = {
     graph: initGraph(audioCtx, defaultGraph),

@@ -1,7 +1,7 @@
 import BufferLoader from '../../BufferLoader';
 import { h } from 'nimble';
 
-export default class FileInputNode implements WAGenNode {
+export default <WAGenNode>{
     getDefaultNode() {
         return {
             "kind": "input",
@@ -10,12 +10,12 @@ export default class FileInputNode implements WAGenNode {
                 "filePath": "./res/br-jam-loop.wav"
             }
         };
-    }
+    },
     initWANode(audioCtx: AudioContext, node: NodeDef) {
         const bufferSource = audioCtx.createBufferSource();
         bufferSource.loop = true;
         return Promise.resolve(bufferSource);
-    }
+    },
     updateWANode(bufferSource: AudioBufferSourceNode, node: NodeDef, nodeIndex: number, graph: NodeGraph) {
         (new BufferLoader(
             bufferSource.context, [node.options.filePath],
@@ -37,10 +37,7 @@ export default class FileInputNode implements WAGenNode {
                 }
             }
         )).load();
-    }
-    renderView(state: any, affect: Affect, node: NodeDef, nodeIndex: number) {
-        return [];
-    }
+    },
     renderDetail(state: any, affect: Affect, node: NodeDef, nodeIndex: number) {
         return [
             h('div', [
@@ -60,7 +57,7 @@ export default class FileInputNode implements WAGenNode {
                     ])
             ])
         ];
-    }
+    },
     generateCode(nodeName: string, node: NodeDef) {
         return `
 const ${nodeName}FileRequest = new XMLHttpRequest();

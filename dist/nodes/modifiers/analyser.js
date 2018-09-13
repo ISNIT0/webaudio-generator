@@ -1,10 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var nimble_1 = require("nimble");
-var AnalyserModifierNode = /** @class */ (function () {
-    function AnalyserModifierNode() {
-    }
-    AnalyserModifierNode.prototype.getDefaultNode = function () {
+exports.default = {
+    getDefaultNode: function () {
         return {
             kind: 'modifier',
             type: 'analyser',
@@ -12,19 +10,19 @@ var AnalyserModifierNode = /** @class */ (function () {
                 fftSize: 13
             }
         };
-    };
-    AnalyserModifierNode.prototype.initWANode = function (audioCtx, node) {
+    },
+    initWANode: function (audioCtx, node) {
         return Promise.resolve(audioCtx.createAnalyser());
-    };
-    AnalyserModifierNode.prototype.updateWANode = function (analyserNode, node) {
+    },
+    updateWANode: function (analyserNode, node) {
         analyserNode.fftSize = Math.pow(2, node.options.fftSize);
-    };
-    AnalyserModifierNode.prototype.renderView = function (state, affect, node, nodeIndex) {
+    },
+    renderView: function (state, affect, node, nodeIndex) {
         return [
             nimble_1.h('h3', "Analyser")
         ];
-    };
-    AnalyserModifierNode.prototype.renderDetail = function (state, affect, node, nodeIndex) {
+    },
+    renderDetail: function (state, affect, node, nodeIndex) {
         var analyser = node.waNode;
         return [
             nimble_1.h('div', [
@@ -70,13 +68,11 @@ var AnalyserModifierNode = /** @class */ (function () {
                 }
             })
         ];
-    };
-    AnalyserModifierNode.prototype.generateCode = function (nodeName, node) {
+    },
+    generateCode: function (nodeName, node) {
         return "\nconst " + nodeName + " = audioCtx.createAnalyser();\nconst " + nodeName + "RenderFrame = document.createElement('div');\nconst " + nodeName + "Oscilloscope = document.createElement('canvas');\nconst " + nodeName + "Frequency = document.createElement('canvas');\n\n" + nodeName + "RenderFrame.appendChild(" + nodeName + "Oscilloscope);\n" + nodeName + "RenderFrame.appendChild(" + nodeName + "Frequency);\n\n//Requires https://......../...js\ndrawOscilloscope(" + nodeName + "Oscilloscope, " + nodeName + ");\ndrawFrequency(" + nodeName + "Frequency, " + nodeName + ");\n        ";
-    };
-    return AnalyserModifierNode;
-}());
-exports.default = AnalyserModifierNode;
+    }
+};
 function drawOscilloscope(canvas, analyser) {
     if (!canvas.isDestroyed) {
         requestAnimationFrame(function () {

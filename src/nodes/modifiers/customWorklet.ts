@@ -3,8 +3,7 @@ import { h } from 'nimble';
 let prevTsSrc: string;
 let latestParsedBin: Uint8Array;
 
-
-export default class CustomWorkletModifierNode implements WAGenNode {
+export default <WAGenNode>{
     getDefaultNode() {
         return {
             kind: 'modifier',
@@ -13,11 +12,11 @@ export default class CustomWorkletModifierNode implements WAGenNode {
                 tsSource: gainTsSource
             }
         }
-    }
+    },
     initWANode(audioCtx: AudioContext, node: NodeDef) {
         prevTsSrc = node.options.tsSource;
         return <Promise<any>>makeWorkletPromise(audioCtx, node.options.tsSource);
-    }
+    },
     updateWANode(customNode: AudioWorkletNode, node: NodeDef, nodeIndex: number, graph: NodeGraph) {
         if (prevTsSrc !== node.options.tsSource) {
             return makeWorkletPromise(customNode.context, node.options.tsSource)
@@ -39,12 +38,12 @@ export default class CustomWorkletModifierNode implements WAGenNode {
         } else {
             return Promise.resolve();
         }
-    }
+    },
     renderView(state: State, affect: Affect, node: NodeDef, nodeIndex: number) {
         return [
             h('h3', `Custom`),
         ]
-    }
+    },
     renderDetail(state: State, affect: Affect, node: NodeDef, nodeIndex: number) {
         return [
             h('div', {
@@ -76,7 +75,7 @@ export default class CustomWorkletModifierNode implements WAGenNode {
                     }, 'help')
                 ])
         ];
-    }
+    },
     generateCode(nodeName: string, node: NodeDef) {
         if (latestParsedBin) {
             const fileContent = makeProcessorsFile(nodeName, latestParsedBin);
@@ -187,7 +186,7 @@ function makeWorkletPromise(audioCtx: BaseAudioContext, ts: string): Promise<Aud
                 return new AudioWorkletNode(audioCtx, id);
             });
         })
-        .then(resolve)
-        .catch(reject);
+            .then(resolve)
+            .catch(reject);
     });
 }

@@ -40,10 +40,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var BufferLoader_1 = __importDefault(require("../../BufferLoader"));
 var nimble_1 = require("nimble");
-var BiQuadFilterModifierNode = /** @class */ (function () {
-    function BiQuadFilterModifierNode() {
-    }
-    BiQuadFilterModifierNode.prototype.getDefaultNode = function () {
+exports.default = {
+    getDefaultNode: function () {
         return {
             kind: 'modifier',
             type: 'convreverb',
@@ -51,8 +49,8 @@ var BiQuadFilterModifierNode = /** @class */ (function () {
                 normalized: true
             }
         };
-    };
-    BiQuadFilterModifierNode.prototype.initWANode = function (audioCtx, node) {
+    },
+    initWANode: function (audioCtx, node) {
         return new Promise(function (resolve, reject) {
             (new BufferLoader_1.default(audioCtx, ['./res/conv-ir.wav'], function (_a) {
                 var buffer = _a[0];
@@ -67,11 +65,11 @@ var BiQuadFilterModifierNode = /** @class */ (function () {
                 });
             })).load();
         });
-    };
-    BiQuadFilterModifierNode.prototype.updateWANode = function (convreverbNode, node) {
+    },
+    updateWANode: function (convreverbNode, node) {
         convreverbNode.normalize = !!node.options.normalized;
-    };
-    BiQuadFilterModifierNode.prototype.renderView = function (state, affect, node, nodeIndex) {
+    },
+    renderView: function (state, affect, node, nodeIndex) {
         return [
             nimble_1.h('h3', "Conv Reverb"),
             nimble_1.h('div', {
@@ -80,13 +78,8 @@ var BiQuadFilterModifierNode = /** @class */ (function () {
                 }
             }, [])
         ];
-    };
-    BiQuadFilterModifierNode.prototype.renderDetail = function (state, affect, node, nodeIndex) {
-        return [];
-    };
-    BiQuadFilterModifierNode.prototype.generateCode = function (nodeName, node) {
+    },
+    generateCode: function (nodeName, node) {
         return "\n\nconst " + nodeName + "FileRequest = new XMLHttpRequest();\n" + nodeName + "FileRequest.open('GET', \"https://webaudio.simmsreeve.com/res/conv-ir.wav\", true);\n" + nodeName + "FileRequest.responseType = 'arraybuffer';\n\nconst " + nodeName + "FilePromise = new Promise((resolve, reject) => {\n    " + nodeName + "FileRequest.onload = function() {\n        audioCtx.decodeAudioData(" + nodeName + "FileRequest.response, resolve, reject);\n    }\n    " + nodeName + "FileRequest.onerror = reject;\n})\n" + nodeName + "FileRequest.send();\n\nconst " + nodeName + " = audioCtx.createConvolver();\n" + nodeName + ".buffer = await " + nodeName + "FilePromise;\n";
-    };
-    return BiQuadFilterModifierNode;
-}());
-exports.default = BiQuadFilterModifierNode;
+    }
+};

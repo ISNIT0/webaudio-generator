@@ -1,3 +1,5 @@
-export default {
-    speaker: require('./speaker')
-};
+import speaker from './speaker';
+
+export {
+    speaker
+}

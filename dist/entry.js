@@ -137,7 +137,7 @@ function renderNode(state, affect, node, index) {
                         }
                     }
                 }
-            }, nodeDef.renderView(state, affect, node, index) || [
+            }, nodeDef.renderView ? nodeDef.renderView(state, affect, node, index) : [
                 nimble_1.h('h3', node.kind === 'modifier' ? node.type : node.kind),
             ]),
             state.selectedNode === index ?
@@ -176,7 +176,7 @@ function renderNode(state, affect, node, index) {
                         }, Object.keys(index_1.default[node.kind]).map(function (type) { return nimble_1.h('option', type); }))
                     ]),
                     nimble_1.h('hr'),
-                    nodeDef.renderDetail(state, affect, node, index)
+                    nodeDef.renderDetail ? nodeDef.renderDetail(state, affect, node, index) : null
                 ]) :
                 null,
             index !== state.graph.nodes.length - 1 ? makeArrow(state, affect, index) : null,

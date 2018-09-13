@@ -1,6 +1,6 @@
 import { h } from 'nimble';
 
-export default class AnalyserModifierNode implements WAGenNode {
+export default <WAGenNode>{
     getDefaultNode() {
         return {
             kind: 'modifier',
@@ -9,18 +9,18 @@ export default class AnalyserModifierNode implements WAGenNode {
                 fftSize: 13
             }
         }
-    }
+    },
     initWANode(audioCtx: AudioContext, node: NodeDef) {
         return Promise.resolve(audioCtx.createAnalyser());
-    }
+    },
     updateWANode(analyserNode: AnalyserNode & AudioNode, node: NodeDef) {
         analyserNode.fftSize = Math.pow(2, node.options.fftSize);
-    }
+    },
     renderView(state: State, affect: Affect, node: NodeDef, nodeIndex: number) {
         return [
             h('h3', `Analyser`)
         ]
-    }
+    },
     renderDetail(state: State, affect: Affect, node: NodeDef, nodeIndex: number) {
         const analyser = node.waNode;
         return [
@@ -59,16 +59,16 @@ export default class AnalyserModifierNode implements WAGenNode {
                     width: '100%',
                     height: '100px'
                 },
-                oncreate(element:HTMLCanvasElement, lastProps:{}) {
+                oncreate(element: HTMLCanvasElement, lastProps: {}) {
                     drawFrequency(element, analyser);
                 },
-                ondestroy(element:HTMLCanvasElement) {
+                ondestroy(element: HTMLCanvasElement) {
                     (<any>element).isDestroyed = true;
                 }
             })
         ];
-    }
-    generateCode(nodeName:string, node:NodeDef) {
+    },
+    generateCode(nodeName: string, node: NodeDef) {
         return `
 const ${nodeName} = audioCtx.createAnalyser();
 const ${nodeName}RenderFrame = document.createElement('div');
@@ -86,7 +86,7 @@ drawFrequency(${nodeName}Frequency, ${nodeName});
 }
 
 
-function drawOscilloscope(canvas:HTMLCanvasElement, analyser:AnalyserNode) {
+function drawOscilloscope(canvas: HTMLCanvasElement, analyser: AnalyserNode) {
 
     if (!(<any>canvas).isDestroyed) {
         requestAnimationFrame(() => {
@@ -129,7 +129,7 @@ function drawOscilloscope(canvas:HTMLCanvasElement, analyser:AnalyserNode) {
     canvasCtx.stroke();
 }
 
-function drawFrequency(canvas:HTMLCanvasElement, analyser:AnalyserNode) {
+function drawFrequency(canvas: HTMLCanvasElement, analyser: AnalyserNode) {
 
     if (!(<any>canvas).isDestroyed) {
         requestAnimationFrame(() => {

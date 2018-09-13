@@ -1,10 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var nimble_1 = require("nimble");
-var BiQuadFilterModifierNode = /** @class */ (function () {
-    function BiQuadFilterModifierNode() {
-    }
-    BiQuadFilterModifierNode.prototype.getDefaultNode = function () {
+exports.default = {
+    getDefaultNode: function () {
         return {
             kind: 'modifier',
             type: 'biquadFilter',
@@ -16,24 +14,24 @@ var BiQuadFilterModifierNode = /** @class */ (function () {
                 detune: 0,
             }
         };
-    };
-    BiQuadFilterModifierNode.prototype.initWANode = function (audioCtx, node) {
+    },
+    initWANode: function (audioCtx, node) {
         return Promise.resolve(audioCtx.createBiquadFilter());
-    };
-    BiQuadFilterModifierNode.prototype.updateWANode = function (filterNode, node) {
+    },
+    updateWANode: function (filterNode, node) {
         filterNode.gain.value = node.options.gain;
         filterNode.Q.value = node.options.Q;
         filterNode.detune.value = node.options.detune;
         filterNode.frequency.value = node.options.frequency;
         filterNode.type.value = node.options.type;
-    };
-    BiQuadFilterModifierNode.prototype.renderView = function (state, affect, node, nodeIndex) {
+    },
+    renderView: function (state, affect, node, nodeIndex) {
         return [
             nimble_1.h('h3', "Biquad Filter"),
             nimble_1.h('span', "" + node.options.frequency)
         ];
-    };
-    BiQuadFilterModifierNode.prototype.renderDetail = function (state, affect, node, nodeIndex) {
+    },
+    renderDetail: function (state, affect, node, nodeIndex) {
         return [
             nimble_1.h('div', [
                 nimble_1.h('strong', 'Type:'),
@@ -106,10 +104,8 @@ var BiQuadFilterModifierNode = /** @class */ (function () {
                 })
             ])
         ];
-    };
-    BiQuadFilterModifierNode.prototype.generateCode = function (nodeName, node) {
+    },
+    generateCode: function (nodeName, node) {
         return "\nconst " + nodeName + " = audioCtx.createBiquadFilter();\n" + nodeName + ".gain.value = " + node.options.gain + ";\n" + nodeName + ".Q.value = " + node.options.Q + ";\n" + nodeName + ".detune.value = " + node.options.detune + ";\n" + nodeName + ".frequency.value = " + node.options.frequency + ";\n" + nodeName + ".type.value = \"" + node.options.type + "\";\n";
-    };
-    return BiQuadFilterModifierNode;
-}());
-exports.default = BiQuadFilterModifierNode;
+    }
+};

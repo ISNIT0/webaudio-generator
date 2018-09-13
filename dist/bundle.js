@@ -206,7 +206,7 @@ function renderNode(state, affect, node, index) {
                         }
                     }
                 }
-            }, nodeDef.renderView(state, affect, node, index) || [
+            }, nodeDef.renderView ? nodeDef.renderView(state, affect, node, index) : [
                 nimble_1.h('h3', node.kind === 'modifier' ? node.type : node.kind),
             ]),
             state.selectedNode === index ?
@@ -245,7 +245,7 @@ function renderNode(state, affect, node, index) {
                         }, Object.keys(index_1.default[node.kind]).map(function (type) { return nimble_1.h('option', type); }))
                     ]),
                     nimble_1.h('hr'),
-                    nodeDef.renderDetail(state, affect, node, index)
+                    nodeDef.renderDetail ? nodeDef.renderDetail(state, affect, node, index) : null
                 ]) :
                 null,
             index !== state.graph.nodes.length - 1 ? makeArrow(state, affect, index) : null,
@@ -396,10 +396,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var BufferLoader_1 = __importDefault(require("../../BufferLoader"));
 var nimble_1 = require("nimble");
-var FileInputNode = /** @class */ (function () {
-    function FileInputNode() {
-    }
-    FileInputNode.prototype.getDefaultNode = function () {
+exports.default = {
+    getDefaultNode: function () {
         return {
             "kind": "input",
             "type": "file",
@@ -407,13 +405,13 @@ var FileInputNode = /** @class */ (function () {
                 "filePath": "./res/br-jam-loop.wav"
             }
         };
-    };
-    FileInputNode.prototype.initWANode = function (audioCtx, node) {
+    },
+    initWANode: function (audioCtx, node) {
         var bufferSource = audioCtx.createBufferSource();
         bufferSource.loop = true;
         return Promise.resolve(bufferSource);
-    };
-    FileInputNode.prototype.updateWANode = function (bufferSource, node, nodeIndex, graph) {
+    },
+    updateWANode: function (bufferSource, node, nodeIndex, graph) {
         (new BufferLoader_1.default(bufferSource.context, [node.options.filePath], function (_a) {
             var buffer = _a[0];
             return __awaiter(this, void 0, void 0, function () {
@@ -437,11 +435,8 @@ var FileInputNode = /** @class */ (function () {
                 });
             });
         })).load();
-    };
-    FileInputNode.prototype.renderView = function (state, affect, node, nodeIndex) {
-        return [];
-    };
-    FileInputNode.prototype.renderDetail = function (state, affect, node, nodeIndex) {
+    },
+    renderDetail: function (state, affect, node, nodeIndex) {
         return [
             nimble_1.h('div', [
                 nimble_1.h('strong', 'Audio File:'),
@@ -460,13 +455,11 @@ var FileInputNode = /** @class */ (function () {
                 ])
             ])
         ];
-    };
-    FileInputNode.prototype.generateCode = function (nodeName, node) {
+    },
+    generateCode: function (nodeName, node) {
         return "\nconst " + nodeName + "FileRequest = new XMLHttpRequest();\n" + nodeName + "FileRequest.open('GET', \"https://webaudio.simmsreeve.com/" + node.options.filePath + "\", true);\n" + nodeName + "FileRequest.responseType = 'arraybuffer';\n\nconst " + nodeName + "FilePromise = new Promise((resolve, reject) => {\n    " + nodeName + "FileRequest.onload = function() {\n        audioCtx.decodeAudioData(" + nodeName + "FileRequest.response, resolve, reject);\n    }\n    " + nodeName + "FileRequest.onerror = reject;\n})\n" + nodeName + "FileRequest.send();\n\nconst " + nodeName + " = audioCtx.createBufferSource();\n" + nodeName + ".buffer = await " + nodeName + "FilePromise;\n" + nodeName + ".start(0);\n";
-    };
-    return FileInputNode;
-}());
-exports.default = FileInputNode;
+    }
+};
 
 },{"../../BufferLoader":1,"nimble":22}],6:[function(require,module,exports){
 "use strict";
@@ -486,36 +479,27 @@ exports.midi = midi_1.default;
 },{"./file":5,"./microphone":7,"./midi":8,"./oscillator":9}],7:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var MicrophoneInputNode = /** @class */ (function () {
-    function MicrophoneInputNode() {
-    }
-    MicrophoneInputNode.prototype.getDefaultNode = function () {
+exports.default = {
+    getDefaultNode: function () {
         return {
             "kind": "input",
             "type": "microphone",
             "options": {}
         };
-    };
-    MicrophoneInputNode.prototype.initWANode = function (audioCtx, node) {
+    },
+    initWANode: function (audioCtx, node) {
         return navigator.mediaDevices.getUserMedia({
             audio: true
         })
             .then(function (stream) {
             return audioCtx.createMediaStreamSource(stream);
         });
-    };
-    MicrophoneInputNode.prototype.updateWANode = function (waNode, node) { };
-    MicrophoneInputNode.prototype.renderView = function (state, affect, node, nodeIndex) { return []; };
-    MicrophoneInputNode.prototype.renderDetail = function (state, affect, node, nodeIndex) {
-        return [];
-    };
-    MicrophoneInputNode.prototype.generateCode = function (nodeName, node) {
+    },
+    updateWANode: function (waNode, node) { },
+    generateCode: function (nodeName, node) {
         return "\nconst " + nodeName + " = audioCtx.createMediaStreamSource(\n    await navigator.mediaDevices.getUserMedia({ audio: true })\n);\n";
-    };
-    return MicrophoneInputNode;
-}());
-exports.default = MicrophoneInputNode;
-;
+    }
+};
 
 },{}],8:[function(require,module,exports){
 "use strict";
@@ -526,17 +510,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var tone_1 = __importDefault(require("tone"));
 var webmidi_1 = __importDefault(require("webmidi"));
 var nimble_1 = require("nimble");
-var MidiInputNode = /** @class */ (function () {
-    function MidiInputNode() {
-    }
-    MidiInputNode.prototype.getDefaultNode = function () {
+exports.default = {
+    getDefaultNode: function () {
         return {
             "kind": "input",
             "type": "midi",
             "options": {}
         };
-    };
-    MidiInputNode.prototype.initWANode = function (audioCtx, node) {
+    },
+    initWANode: function (audioCtx, node) {
         tone_1.default.setContext(audioCtx);
         var synth = new tone_1.default.Synth();
         webmidi_1.default.enable(function (err) {
@@ -557,11 +539,10 @@ var MidiInputNode = /** @class */ (function () {
             });
         });
         return synth.output;
-    };
-    MidiInputNode.prototype.updateWANode = function (waNode, node) {
-    };
-    MidiInputNode.prototype.renderView = function (state, affect, node, nodeIndex) { return []; };
-    MidiInputNode.prototype.renderDetail = function (state, affect, node, nodeIndex) {
+    },
+    updateWANode: function (waNode, node) {
+    },
+    renderDetail: function (state, affect, node, nodeIndex) {
         return [
             nimble_1.h('div', [
                 nimble_1.h('p', [
@@ -569,22 +550,18 @@ var MidiInputNode = /** @class */ (function () {
                 ])
             ])
         ];
-    };
-    MidiInputNode.prototype.generateCode = function (nodeName, node) {
+    },
+    generateCode: function (nodeName, node) {
         return "\n// Requires <script src=\"https://cdn.jsdelivr.net/npm/webmidi\"></script>\n// Requires <script src=\"https://tonejs.github.io/build/Tone.js\"></script>\n\nTone.setContext(audioCtx);\nconst " + nodeName + " = new Tone.Synth();\n\nWebMidi.enable(function (err) {\n    if (err) {\n        alert(\"WebMidi could not be enabled.\");\n    }\n\n    output = WebMidi.outputs[0];\n    input = WebMidi.inputs[0];\n\n    input.addListener('noteon', \"all\", e => {\n        output.playNote(e.note.name + e.note.octave, 'all', { velocity: 1 });\n        " + nodeName + ".triggerAttack(e.note.name + e.note.octave);\n    });\n    input.addListener('noteoff', \"all\", e => {\n        output.playNote(e.note.name + e.note.octave, 'all', { velocity: 0 });\n        " + nodeName + ".triggerRelease();\n    });\n});\n";
-    };
-    return MidiInputNode;
-}());
-exports.default = MidiInputNode;
+    }
+};
 
 },{"nimble":22,"tone":25,"webmidi":27}],9:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var nimble_1 = require("nimble");
-var OscillatorInputNode = /** @class */ (function () {
-    function OscillatorInputNode() {
-    }
-    OscillatorInputNode.prototype.getDefaultNode = function () {
+exports.default = {
+    getDefaultNode: function () {
         return {
             "kind": "input",
             "type": "oscillator",
@@ -593,18 +570,17 @@ var OscillatorInputNode = /** @class */ (function () {
                 "frequency": 1000
             }
         };
-    };
-    OscillatorInputNode.prototype.initWANode = function (audioCtx, node) {
+    },
+    initWANode: function (audioCtx, node) {
         var oscillator = audioCtx.createOscillator();
         oscillator.start();
         return Promise.resolve(oscillator);
-    };
-    OscillatorInputNode.prototype.updateWANode = function (oscillator, node) {
+    },
+    updateWANode: function (oscillator, node) {
         oscillator.type = node.options.waveType;
         oscillator.frequency.setValueAtTime(node.options.frequency, oscillator.context.currentTime);
-    };
-    OscillatorInputNode.prototype.renderView = function (state, affect, node, nodeIndex) { return []; };
-    OscillatorInputNode.prototype.renderDetail = function (state, affect, node, nodeIndex) {
+    },
+    renderDetail: function (state, affect, node, nodeIndex) {
         return [
             nimble_1.h('div', [
                 nimble_1.h('strong', 'WaveType:'),
@@ -620,22 +596,18 @@ var OscillatorInputNode = /** @class */ (function () {
                 ])
             ])
         ];
-    };
-    OscillatorInputNode.prototype.generateCode = function (nodeName, node) {
+    },
+    generateCode: function (nodeName, node) {
         return "\nconst " + nodeName + " = audioCtx.createOscillator();\n" + nodeName + ".type = \"" + node.options.waveType + "\";\n" + nodeName + ".frequency = " + node.options.frequency + ";\n" + nodeName + ".start();\n";
-    };
-    return OscillatorInputNode;
-}());
-exports.default = OscillatorInputNode;
+    }
+};
 
 },{"nimble":22}],10:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var nimble_1 = require("nimble");
-var AnalyserModifierNode = /** @class */ (function () {
-    function AnalyserModifierNode() {
-    }
-    AnalyserModifierNode.prototype.getDefaultNode = function () {
+exports.default = {
+    getDefaultNode: function () {
         return {
             kind: 'modifier',
             type: 'analyser',
@@ -643,19 +615,19 @@ var AnalyserModifierNode = /** @class */ (function () {
                 fftSize: 13
             }
         };
-    };
-    AnalyserModifierNode.prototype.initWANode = function (audioCtx, node) {
+    },
+    initWANode: function (audioCtx, node) {
         return Promise.resolve(audioCtx.createAnalyser());
-    };
-    AnalyserModifierNode.prototype.updateWANode = function (analyserNode, node) {
+    },
+    updateWANode: function (analyserNode, node) {
         analyserNode.fftSize = Math.pow(2, node.options.fftSize);
-    };
-    AnalyserModifierNode.prototype.renderView = function (state, affect, node, nodeIndex) {
+    },
+    renderView: function (state, affect, node, nodeIndex) {
         return [
             nimble_1.h('h3', "Analyser")
         ];
-    };
-    AnalyserModifierNode.prototype.renderDetail = function (state, affect, node, nodeIndex) {
+    },
+    renderDetail: function (state, affect, node, nodeIndex) {
         var analyser = node.waNode;
         return [
             nimble_1.h('div', [
@@ -701,13 +673,11 @@ var AnalyserModifierNode = /** @class */ (function () {
                 }
             })
         ];
-    };
-    AnalyserModifierNode.prototype.generateCode = function (nodeName, node) {
+    },
+    generateCode: function (nodeName, node) {
         return "\nconst " + nodeName + " = audioCtx.createAnalyser();\nconst " + nodeName + "RenderFrame = document.createElement('div');\nconst " + nodeName + "Oscilloscope = document.createElement('canvas');\nconst " + nodeName + "Frequency = document.createElement('canvas');\n\n" + nodeName + "RenderFrame.appendChild(" + nodeName + "Oscilloscope);\n" + nodeName + "RenderFrame.appendChild(" + nodeName + "Frequency);\n\n//Requires https://......../...js\ndrawOscilloscope(" + nodeName + "Oscilloscope, " + nodeName + ");\ndrawFrequency(" + nodeName + "Frequency, " + nodeName + ");\n        ";
-    };
-    return AnalyserModifierNode;
-}());
-exports.default = AnalyserModifierNode;
+    }
+};
 function drawOscilloscope(canvas, analyser) {
     if (!canvas.isDestroyed) {
         requestAnimationFrame(function () {
@@ -766,10 +736,8 @@ function drawFrequency(canvas, analyser) {
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var nimble_1 = require("nimble");
-var BiQuadFilterModifierNode = /** @class */ (function () {
-    function BiQuadFilterModifierNode() {
-    }
-    BiQuadFilterModifierNode.prototype.getDefaultNode = function () {
+exports.default = {
+    getDefaultNode: function () {
         return {
             kind: 'modifier',
             type: 'biquadFilter',
@@ -781,24 +749,24 @@ var BiQuadFilterModifierNode = /** @class */ (function () {
                 detune: 0,
             }
         };
-    };
-    BiQuadFilterModifierNode.prototype.initWANode = function (audioCtx, node) {
+    },
+    initWANode: function (audioCtx, node) {
         return Promise.resolve(audioCtx.createBiquadFilter());
-    };
-    BiQuadFilterModifierNode.prototype.updateWANode = function (filterNode, node) {
+    },
+    updateWANode: function (filterNode, node) {
         filterNode.gain.value = node.options.gain;
         filterNode.Q.value = node.options.Q;
         filterNode.detune.value = node.options.detune;
         filterNode.frequency.value = node.options.frequency;
         filterNode.type.value = node.options.type;
-    };
-    BiQuadFilterModifierNode.prototype.renderView = function (state, affect, node, nodeIndex) {
+    },
+    renderView: function (state, affect, node, nodeIndex) {
         return [
             nimble_1.h('h3', "Biquad Filter"),
             nimble_1.h('span', "" + node.options.frequency)
         ];
-    };
-    BiQuadFilterModifierNode.prototype.renderDetail = function (state, affect, node, nodeIndex) {
+    },
+    renderDetail: function (state, affect, node, nodeIndex) {
         return [
             nimble_1.h('div', [
                 nimble_1.h('strong', 'Type:'),
@@ -871,13 +839,11 @@ var BiQuadFilterModifierNode = /** @class */ (function () {
                 })
             ])
         ];
-    };
-    BiQuadFilterModifierNode.prototype.generateCode = function (nodeName, node) {
+    },
+    generateCode: function (nodeName, node) {
         return "\nconst " + nodeName + " = audioCtx.createBiquadFilter();\n" + nodeName + ".gain.value = " + node.options.gain + ";\n" + nodeName + ".Q.value = " + node.options.Q + ";\n" + nodeName + ".detune.value = " + node.options.detune + ";\n" + nodeName + ".frequency.value = " + node.options.frequency + ";\n" + nodeName + ".type.value = \"" + node.options.type + "\";\n";
-    };
-    return BiQuadFilterModifierNode;
-}());
-exports.default = BiQuadFilterModifierNode;
+    }
+};
 
 },{"nimble":22}],12:[function(require,module,exports){
 "use strict";
@@ -922,10 +888,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var BufferLoader_1 = __importDefault(require("../../BufferLoader"));
 var nimble_1 = require("nimble");
-var BiQuadFilterModifierNode = /** @class */ (function () {
-    function BiQuadFilterModifierNode() {
-    }
-    BiQuadFilterModifierNode.prototype.getDefaultNode = function () {
+exports.default = {
+    getDefaultNode: function () {
         return {
             kind: 'modifier',
             type: 'convreverb',
@@ -933,8 +897,8 @@ var BiQuadFilterModifierNode = /** @class */ (function () {
                 normalized: true
             }
         };
-    };
-    BiQuadFilterModifierNode.prototype.initWANode = function (audioCtx, node) {
+    },
+    initWANode: function (audioCtx, node) {
         return new Promise(function (resolve, reject) {
             (new BufferLoader_1.default(audioCtx, ['./res/conv-ir.wav'], function (_a) {
                 var buffer = _a[0];
@@ -949,11 +913,11 @@ var BiQuadFilterModifierNode = /** @class */ (function () {
                 });
             })).load();
         });
-    };
-    BiQuadFilterModifierNode.prototype.updateWANode = function (convreverbNode, node) {
+    },
+    updateWANode: function (convreverbNode, node) {
         convreverbNode.normalize = !!node.options.normalized;
-    };
-    BiQuadFilterModifierNode.prototype.renderView = function (state, affect, node, nodeIndex) {
+    },
+    renderView: function (state, affect, node, nodeIndex) {
         return [
             nimble_1.h('h3', "Conv Reverb"),
             nimble_1.h('div', {
@@ -962,16 +926,11 @@ var BiQuadFilterModifierNode = /** @class */ (function () {
                 }
             }, [])
         ];
-    };
-    BiQuadFilterModifierNode.prototype.renderDetail = function (state, affect, node, nodeIndex) {
-        return [];
-    };
-    BiQuadFilterModifierNode.prototype.generateCode = function (nodeName, node) {
+    },
+    generateCode: function (nodeName, node) {
         return "\n\nconst " + nodeName + "FileRequest = new XMLHttpRequest();\n" + nodeName + "FileRequest.open('GET', \"https://webaudio.simmsreeve.com/res/conv-ir.wav\", true);\n" + nodeName + "FileRequest.responseType = 'arraybuffer';\n\nconst " + nodeName + "FilePromise = new Promise((resolve, reject) => {\n    " + nodeName + "FileRequest.onload = function() {\n        audioCtx.decodeAudioData(" + nodeName + "FileRequest.response, resolve, reject);\n    }\n    " + nodeName + "FileRequest.onerror = reject;\n})\n" + nodeName + "FileRequest.send();\n\nconst " + nodeName + " = audioCtx.createConvolver();\n" + nodeName + ".buffer = await " + nodeName + "FilePromise;\n";
-    };
-    return BiQuadFilterModifierNode;
-}());
-exports.default = BiQuadFilterModifierNode;
+    }
+};
 
 },{"../../BufferLoader":1,"nimble":22}],13:[function(require,module,exports){
 "use strict";
@@ -979,10 +938,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var nimble_1 = require("nimble");
 var prevTsSrc;
 var latestParsedBin;
-var CustomWorkletModifierNode = /** @class */ (function () {
-    function CustomWorkletModifierNode() {
-    }
-    CustomWorkletModifierNode.prototype.getDefaultNode = function () {
+exports.default = {
+    getDefaultNode: function () {
         return {
             kind: 'modifier',
             type: 'customWorklet',
@@ -990,12 +947,12 @@ var CustomWorkletModifierNode = /** @class */ (function () {
                 tsSource: gainTsSource
             }
         };
-    };
-    CustomWorkletModifierNode.prototype.initWANode = function (audioCtx, node) {
+    },
+    initWANode: function (audioCtx, node) {
         prevTsSrc = node.options.tsSource;
         return makeWorkletPromise(audioCtx, node.options.tsSource);
-    };
-    CustomWorkletModifierNode.prototype.updateWANode = function (customNode, node, nodeIndex, graph) {
+    },
+    updateWANode: function (customNode, node, nodeIndex, graph) {
         if (prevTsSrc !== node.options.tsSource) {
             return makeWorkletPromise(customNode.context, node.options.tsSource)
                 .then(function (workletNode) {
@@ -1015,13 +972,13 @@ var CustomWorkletModifierNode = /** @class */ (function () {
         else {
             return Promise.resolve();
         }
-    };
-    CustomWorkletModifierNode.prototype.renderView = function (state, affect, node, nodeIndex) {
+    },
+    renderView: function (state, affect, node, nodeIndex) {
         return [
             nimble_1.h('h3', "Custom"),
         ];
-    };
-    CustomWorkletModifierNode.prototype.renderDetail = function (state, affect, node, nodeIndex) {
+    },
+    renderDetail: function (state, affect, node, nodeIndex) {
         return [
             nimble_1.h('div', {
                 style: {
@@ -1052,8 +1009,8 @@ var CustomWorkletModifierNode = /** @class */ (function () {
                 }, 'help')
             ])
         ];
-    };
-    CustomWorkletModifierNode.prototype.generateCode = function (nodeName, node) {
+    },
+    generateCode: function (nodeName, node) {
         if (latestParsedBin) {
             var fileContent = makeProcessorsFile(nodeName, latestParsedBin);
             return "\nconst " + nodeName + " = await audioCtx.audioWorklet.addModule(`data:application/javascript;base64," + btoa(fileContent) + "`).then(() => {\n    return new AudioWorkletNode(audioCtx, '" + nodeName + "');\n});\n        ";
@@ -1061,10 +1018,8 @@ var CustomWorkletModifierNode = /** @class */ (function () {
         else {
             return '';
         }
-    };
-    return CustomWorkletModifierNode;
-}());
-exports.default = CustomWorkletModifierNode;
+    }
+};
 function intArrayFromBase64(s) {
     var decoded = atob(s);
     var bytes = new Uint8Array(decoded.length);
@@ -1106,10 +1061,8 @@ function makeWorkletPromise(audioCtx, ts) {
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var nimble_1 = require("nimble");
-var DelayModifierNode = /** @class */ (function () {
-    function DelayModifierNode() {
-    }
-    DelayModifierNode.prototype.getDefaultNode = function () {
+exports.default = {
+    getDefaultNode: function () {
         return {
             kind: 'modifier',
             type: 'delay',
@@ -1117,14 +1070,14 @@ var DelayModifierNode = /** @class */ (function () {
                 value: 1000
             }
         };
-    };
-    DelayModifierNode.prototype.initWANode = function (audioCtx, node) {
+    },
+    initWANode: function (audioCtx, node) {
         return Promise.resolve(audioCtx.createDelay());
-    };
-    DelayModifierNode.prototype.updateWANode = function (delayNode, node) {
+    },
+    updateWANode: function (delayNode, node) {
         delayNode.delayTime.value = node.options.value;
-    };
-    DelayModifierNode.prototype.renderView = function (state, affect, node, nodeIndex) {
+    },
+    renderView: function (state, affect, node, nodeIndex) {
         return [
             nimble_1.h('h3', "Delay"),
             nimble_1.h('span', "" + node.options.value),
@@ -1148,25 +1101,18 @@ var DelayModifierNode = /** @class */ (function () {
                 })
             ])
         ];
-    };
-    DelayModifierNode.prototype.renderDetail = function (state, affect, node, nodeIndex) {
-        return [];
-    };
-    DelayModifierNode.prototype.generateCode = function (nodeName, node) {
+    },
+    generateCode: function (nodeName, node) {
         return "\nconst " + nodeName + " = audioCtx.createDelay();\n" + nodeName + ".delayTime.value = " + node.options.value + ";\n";
-    };
-    return DelayModifierNode;
-}());
-exports.default = DelayModifierNode;
+    }
+};
 
 },{"nimble":22}],15:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var nimble_1 = require("nimble");
-var GainModifierNode = /** @class */ (function () {
-    function GainModifierNode() {
-    }
-    GainModifierNode.prototype.getDefaultNode = function () {
+exports.default = {
+    getDefaultNode: function () {
         return {
             kind: 'modifier',
             type: 'gain',
@@ -1174,14 +1120,14 @@ var GainModifierNode = /** @class */ (function () {
                 value: 1
             }
         };
-    };
-    GainModifierNode.prototype.initWANode = function (audioCtx, node) {
+    },
+    initWANode: function (audioCtx, node) {
         return Promise.resolve(audioCtx.createGain());
-    };
-    GainModifierNode.prototype.updateWANode = function (gainNode, node) {
+    },
+    updateWANode: function (gainNode, node) {
         gainNode.gain.value = node.options.value;
-    };
-    GainModifierNode.prototype.renderView = function (state, affect, node, nodeIndex) {
+    },
+    renderView: function (state, affect, node, nodeIndex) {
         return [
             nimble_1.h('h3', "Gain"),
             nimble_1.h('span', "" + node.options.value),
@@ -1205,59 +1151,55 @@ var GainModifierNode = /** @class */ (function () {
                 })
             ])
         ];
-    };
-    GainModifierNode.prototype.renderDetail = function (state, affect, node, nodeIndex) {
-        return [];
-    };
-    GainModifierNode.prototype.generateCode = function (nodeName, node) {
+    },
+    generateCode: function (nodeName, node) {
         return "\nconst " + nodeName + " = audioCtx.createGain();\n" + nodeName + ".gain.value = " + node.options.value + ";\n";
-    };
-    return GainModifierNode;
-}());
-exports.default = GainModifierNode;
+    }
+};
 
 },{"nimble":22}],16:[function(require,module,exports){
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = {
-    delay: require('./delay'),
-    gain: require('./gain'),
-    biquadFilter: require('./biquadFilter'),
-    analyser: require('./analyser'),
-    customWorklet: require('./customWorklet'),
-    convreverb: require('./convreverb')
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
 };
+Object.defineProperty(exports, "__esModule", { value: true });
+var delay_1 = __importDefault(require("./delay"));
+exports.delay = delay_1.default;
+var gain_1 = __importDefault(require("./gain"));
+exports.gain = gain_1.default;
+var biquadFilter_1 = __importDefault(require("./biquadFilter"));
+exports.biquadFilter = biquadFilter_1.default;
+var analyser_1 = __importDefault(require("./analyser"));
+exports.analyser = analyser_1.default;
+var customWorklet_1 = __importDefault(require("./customWorklet"));
+exports.customWorklet = customWorklet_1.default;
+var convreverb_1 = __importDefault(require("./convreverb"));
+exports.convreverb = convreverb_1.default;
 
 },{"./analyser":10,"./biquadFilter":11,"./convreverb":12,"./customWorklet":13,"./delay":14,"./gain":15}],17:[function(require,module,exports){
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = {
-    speaker: require('./speaker')
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
 };
+Object.defineProperty(exports, "__esModule", { value: true });
+var speaker_1 = __importDefault(require("./speaker"));
+exports.speaker = speaker_1.default;
 
 },{"./speaker":18}],18:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var SpeakerOutputNode = /** @class */ (function () {
-    function SpeakerOutputNode() {
-    }
-    SpeakerOutputNode.prototype.getDefaultNode = function () {
+exports.default = {
+    getDefaultNode: function () {
         return {};
-    };
-    SpeakerOutputNode.prototype.initWANode = function (audioCtx, node) {
+    },
+    initWANode: function (audioCtx, node) {
         return Promise.resolve(audioCtx.destination);
-    };
-    SpeakerOutputNode.prototype.updateWANode = function () { };
-    SpeakerOutputNode.prototype.renderView = function (node) { return []; };
-    SpeakerOutputNode.prototype.renderDetail = function (state, affect, node, nodeIndex) {
-        return [];
-    };
-    SpeakerOutputNode.prototype.generateCode = function (nodeName, node) {
+    },
+    updateWANode: function () { },
+    generateCode: function (nodeName, node) {
         return "\nconst speakerNode = audioCtx.destination;\n";
-    };
-    return SpeakerOutputNode;
-}());
-exports.default = SpeakerOutputNode;
+    }
+};
 
 },{}],19:[function(require,module,exports){
 (function (global){

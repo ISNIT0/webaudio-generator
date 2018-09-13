@@ -3,10 +3,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var nimble_1 = require("nimble");
 var prevTsSrc;
 var latestParsedBin;
-var CustomWorkletModifierNode = /** @class */ (function () {
-    function CustomWorkletModifierNode() {
-    }
-    CustomWorkletModifierNode.prototype.getDefaultNode = function () {
+exports.default = {
+    getDefaultNode: function () {
         return {
             kind: 'modifier',
             type: 'customWorklet',
@@ -14,12 +12,12 @@ var CustomWorkletModifierNode = /** @class */ (function () {
                 tsSource: gainTsSource
             }
         };
-    };
-    CustomWorkletModifierNode.prototype.initWANode = function (audioCtx, node) {
+    },
+    initWANode: function (audioCtx, node) {
         prevTsSrc = node.options.tsSource;
         return makeWorkletPromise(audioCtx, node.options.tsSource);
-    };
-    CustomWorkletModifierNode.prototype.updateWANode = function (customNode, node, nodeIndex, graph) {
+    },
+    updateWANode: function (customNode, node, nodeIndex, graph) {
         if (prevTsSrc !== node.options.tsSource) {
             return makeWorkletPromise(customNode.context, node.options.tsSource)
                 .then(function (workletNode) {
@@ -39,13 +37,13 @@ var CustomWorkletModifierNode = /** @class */ (function () {
         else {
             return Promise.resolve();
         }
-    };
-    CustomWorkletModifierNode.prototype.renderView = function (state, affect, node, nodeIndex) {
+    },
+    renderView: function (state, affect, node, nodeIndex) {
         return [
             nimble_1.h('h3', "Custom"),
         ];
-    };
-    CustomWorkletModifierNode.prototype.renderDetail = function (state, affect, node, nodeIndex) {
+    },
+    renderDetail: function (state, affect, node, nodeIndex) {
         return [
             nimble_1.h('div', {
                 style: {
@@ -76,8 +74,8 @@ var CustomWorkletModifierNode = /** @class */ (function () {
                 }, 'help')
             ])
         ];
-    };
-    CustomWorkletModifierNode.prototype.generateCode = function (nodeName, node) {
+    },
+    generateCode: function (nodeName, node) {
         if (latestParsedBin) {
             var fileContent = makeProcessorsFile(nodeName, latestParsedBin);
             return "\nconst " + nodeName + " = await audioCtx.audioWorklet.addModule(`data:application/javascript;base64," + btoa(fileContent) + "`).then(() => {\n    return new AudioWorkletNode(audioCtx, '" + nodeName + "');\n});\n        ";
@@ -85,10 +83,8 @@ var CustomWorkletModifierNode = /** @class */ (function () {
         else {
             return '';
         }
-    };
-    return CustomWorkletModifierNode;
-}());
-exports.default = CustomWorkletModifierNode;
+    }
+};
 function intArrayFromBase64(s) {
     var decoded = atob(s);
     var bytes = new Uint8Array(decoded.length);

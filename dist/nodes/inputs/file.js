@@ -40,10 +40,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var BufferLoader_1 = __importDefault(require("../../BufferLoader"));
 var nimble_1 = require("nimble");
-var FileInputNode = /** @class */ (function () {
-    function FileInputNode() {
-    }
-    FileInputNode.prototype.getDefaultNode = function () {
+exports.default = {
+    getDefaultNode: function () {
         return {
             "kind": "input",
             "type": "file",
@@ -51,13 +49,13 @@ var FileInputNode = /** @class */ (function () {
                 "filePath": "./res/br-jam-loop.wav"
             }
         };
-    };
-    FileInputNode.prototype.initWANode = function (audioCtx, node) {
+    },
+    initWANode: function (audioCtx, node) {
         var bufferSource = audioCtx.createBufferSource();
         bufferSource.loop = true;
         return Promise.resolve(bufferSource);
-    };
-    FileInputNode.prototype.updateWANode = function (bufferSource, node, nodeIndex, graph) {
+    },
+    updateWANode: function (bufferSource, node, nodeIndex, graph) {
         (new BufferLoader_1.default(bufferSource.context, [node.options.filePath], function (_a) {
             var buffer = _a[0];
             return __awaiter(this, void 0, void 0, function () {
@@ -81,11 +79,8 @@ var FileInputNode = /** @class */ (function () {
                 });
             });
         })).load();
-    };
-    FileInputNode.prototype.renderView = function (state, affect, node, nodeIndex) {
-        return [];
-    };
-    FileInputNode.prototype.renderDetail = function (state, affect, node, nodeIndex) {
+    },
+    renderDetail: function (state, affect, node, nodeIndex) {
         return [
             nimble_1.h('div', [
                 nimble_1.h('strong', 'Audio File:'),
@@ -104,10 +99,8 @@ var FileInputNode = /** @class */ (function () {
                 ])
             ])
         ];
-    };
-    FileInputNode.prototype.generateCode = function (nodeName, node) {
+    },
+    generateCode: function (nodeName, node) {
         return "\nconst " + nodeName + "FileRequest = new XMLHttpRequest();\n" + nodeName + "FileRequest.open('GET', \"https://webaudio.simmsreeve.com/" + node.options.filePath + "\", true);\n" + nodeName + "FileRequest.responseType = 'arraybuffer';\n\nconst " + nodeName + "FilePromise = new Promise((resolve, reject) => {\n    " + nodeName + "FileRequest.onload = function() {\n        audioCtx.decodeAudioData(" + nodeName + "FileRequest.response, resolve, reject);\n    }\n    " + nodeName + "FileRequest.onerror = reject;\n})\n" + nodeName + "FileRequest.send();\n\nconst " + nodeName + " = audioCtx.createBufferSource();\n" + nodeName + ".buffer = await " + nodeName + "FilePromise;\n" + nodeName + ".start(0);\n";
-    };
-    return FileInputNode;
-}());
-exports.default = FileInputNode;
+    }
+};
