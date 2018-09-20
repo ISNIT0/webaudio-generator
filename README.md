@@ -1,6 +1,8 @@
 # WebAudio Generator
 A UI for generating linear WebAudio code (https://webaudio.simmsreeve.com/)
 
+[![CodeFactor](https://www.codefactor.io/repository/github/isnit0/webaudio-generator/badge)](https://www.codefactor.io/repository/github/isnit0/webaudio-generator)
+
 ![A screenshot of WebAudio Generator](./screenshot.png "WebAudio Generator in Action")
 
 ## Justification
